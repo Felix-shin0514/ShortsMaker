@@ -1,0 +1,114 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ranking Create</title>
+  <link rel="stylesheet" href="./shared-header.css" />
+  <link rel="stylesheet" href="./ranking.css" />
+</head>
+<body class="ranking-create-page">
+  <header class="sc-navbar">
+    <a class="sc-brand" href="./dashboard.html">
+      <span class="sc-brand-shorts">Shorts</span><span class="sc-brand-craft">maker</span>
+    </a>
+    <nav class="sc-nav">
+      <a href="./dashboard.html">대시보드</a>
+      <a class="is-active" href="./ranking-create.html">메인 작업</a>
+      <a href="./index.html">에뮬레이터</a>
+    </nav>
+  </header>
+  <main class="ranking-main">
+    <button id="backToDashboardBtn" class="back-button" type="button">← 뒤로가기</button>
+
+    <div class="editor-container">
+      <aside class="settings-panel">
+        <div class="setting-section">
+          <h3>프로젝트</h3>
+          <div class="input-group">
+            <label for="projectNameInput">프로젝트 이름</label>
+            <input id="projectNameInput" type="text" placeholder="예: 동물 레전드 TOP 5" maxlength="60" />
+          </div>
+          <div class="input-group" style="display:flex; gap:10px; align-items:center;">
+            <button id="saveProjectBtn" type="button">프로젝트 저장</button>
+            <span id="saveStatus" style="font-size:12px; color:#9ca3af;"></span>
+          </div>
+        </div>
+
+        <div class="setting-section">
+          <h3>상단 타이틀 설정</h3>
+          <div class="input-group">
+            <label for="titleLine1">첫 번째 줄</label>
+            <input id="titleLine1" type="text" placeholder="2026년 최고의" />
+          </div>
+          <div class="input-group">
+            <label for="titleLine2">두 번째 줄</label>
+            <input id="titleLine2" type="text" placeholder="동물 레전드 TOP 5" />
+          </div>
+        </div>
+
+        <div class="setting-section">
+          <h3>랭킹 영상 설정</h3>
+          <div class="input-group">
+            <label for="rankingCount">랭킹 개수</label>
+            <select id="rankingCount">
+              <option value="3">3위까지</option>
+              <option value="4">4위까지</option>
+              <option value="5" selected>5위까지</option>
+              <option value="6">6위까지</option>
+              <option value="7">7위까지</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="setting-section">
+          <h3>배경음악</h3>
+          <input id="backgroundMusic" type="file" accept="audio/*" />
+          <div id="musicPreview" style="margin-top:8px; display:none;">
+            <p id="musicFileName"></p>
+            <audio id="musicPlayer" controls></audio>
+            <button id="removeMusicBtn" type="button">음악 제거</button>
+          </div>
+          <div class="input-group">
+            <label for="musicVolume">음악 볼륨 (<span id="volumeValue">30%</span>)</label>
+            <input id="musicVolume" type="range" min="0" max="100" value="30" />
+          </div>
+          <label id="musicUploadLabel"></label>
+        </div>
+
+        <div class="setting-section">
+          <h3>계정</h3>
+          <p>크레딧: <span id="userCredits">0</span></p>
+          <button id="logoutBtn" type="button">로그아웃</button>
+        </div>
+      </aside>
+
+      <section class="content-editor">
+        <div class="editor-section">
+          <h3>랭킹 아이템</h3>
+          <div id="rankingItemsContainer"></div>
+        </div>
+      </section>
+
+      <aside class="preview-panel">
+        <div class="editor-section">
+          <h3>미리보기</h3>
+          <canvas id="previewCanvas" width="540" height="960" style="width:100%; max-width:360px; border-radius:12px; background:#000;"></canvas>
+          <div class="preview-actions">
+            <button id="refreshPreview" type="button">미리보기 새로고침</button>
+            <button id="generateBtn" type="button">다음으로 →</button>
+            <button id="createNewBtn" type="button">새 영상 만들기</button>
+          </div>
+          <div id="uploadProgressContainer" style="display:none; margin-top:10px;">
+            <div id="uploadProgressFill" style="height:8px; width:0; background:#ff6b00;"></div>
+            <p id="uploadProgressText"></p>
+          </div>
+          <div id="resultSection" style="display:none;"></div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <script src="./ranking-creates.js"></script>
+</body>
+</html>

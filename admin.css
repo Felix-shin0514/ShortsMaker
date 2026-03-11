@@ -1,0 +1,101 @@
+.admin-toolbar{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  margin-top:14px;
+  flex-wrap:wrap;
+}
+
+.admin-search{
+  flex:1;
+  min-width:240px;
+  padding:12px 14px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(0,0,0,.20);
+  color:#e5e7eb;
+  outline:none;
+}
+
+.admin-search::placeholder{color:#9ca3af}
+
+.admin-btn{
+  padding:10px 14px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.06);
+  color:#e5e7eb;
+  cursor:pointer;
+}
+.admin-btn:hover{background:rgba(255,255,255,.09)}
+
+.admin-table-wrap{
+  overflow:auto;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(0,0,0,.20);
+}
+
+.admin-table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:980px;
+}
+
+.admin-table th,
+.admin-table td{
+  padding:12px 12px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  text-align:left;
+  vertical-align:middle;
+  font-size:13px;
+}
+
+.admin-table th{
+  position:sticky;
+  top:0;
+  background:rgba(17,18,23,.92);
+  backdrop-filter: blur(10px);
+  z-index:1;
+  font-weight:700;
+  color:#e5e7eb;
+}
+
+.admin-credit{
+  font-variant-numeric: tabular-nums;
+  font-weight:700;
+}
+
+.credit-actions{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+.credit-actions input{
+  width:110px;
+  padding:8px 10px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(0,0,0,.22);
+  color:#e5e7eb;
+}
+
+.credit-actions button{
+  padding:8px 10px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.06);
+  color:#e5e7eb;
+  cursor:pointer;
+}
+
+.credit-actions button:hover{background:rgba(255,255,255,.10)}
+
+.credit-actions button.is-danger{
+  background:rgba(239,68,68,.12);
+  border-color:rgba(239,68,68,.35);
+}
+.credit-actions button.is-danger:hover{background:rgba(239,68,68,.18)}
+

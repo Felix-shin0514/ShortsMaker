@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>관리자 - 사용자/크레딧</title>
+  <link rel="stylesheet" href="./dashboard.css" />
+  <link rel="stylesheet" href="./admin.css" />
+</head>
+<body class="dashboard-page">
+  <header class="dash-nav">
+    <div class="dash-nav-inner">
+      <a class="dash-logo" href="./dashboard.html">
+        <span class="dash-logo-shorts">Shorts</span><span class="dash-logo-craft">maker</span>
+      </a>
+      <nav class="dash-nav-center">
+        <a href="./dashboard.html">대시보드</a>
+        <a href="./ranking-create.html">메인 작업</a>
+        <a href="./index.html">에뮬레이터</a>
+        <a class="is-active" href="./admin.html">관리자</a>
+      </nav>
+      <div class="dash-nav-right">
+        <span id="admin-name-top">Admin</span>
+        <button id="logout-btn" class="dash-logout-btn">로그아웃</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="dashboard-main">
+    <header class="dashboard-header">
+      <h1>사용자 관리</h1>
+      <p class="welcome-message">가입된 사용자 목록을 확인하고 크레딧을 조정할 수 있습니다.</p>
+      <div class="admin-toolbar">
+        <input id="searchInput" class="admin-search" type="search" placeholder="이메일/이름 검색" />
+        <button id="refreshBtn" class="admin-btn">새로고침</button>
+      </div>
+      <p id="adminStatus" class="subscription-inline"></p>
+    </header>
+
+    <section class="admin-section">
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>이름</th>
+              <th>이메일</th>
+              <th>크레딧</th>
+              <th>조정</th>
+              <th>가입일</th>
+              <th>최근활동</th>
+            </tr>
+          </thead>
+          <tbody id="usersTbody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="./admin.js"></script>
+</body>
+</html>
+

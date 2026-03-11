@@ -1,0 +1,91 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="./dashboard.css" />
+</head>
+<body class="dashboard-page">
+  <header class="dash-nav">
+    <div class="dash-nav-inner">
+      <a class="dash-logo" href="./dashboard.html">
+        <span class="dash-logo-shorts">Shorts</span><span class="dash-logo-craft">maker</span>
+      </a>
+      <nav class="dash-nav-center">
+        <a class="is-active" href="./dashboard.html">대시보드</a>
+        <a id="nav-main-work" href="./ranking-create.html">메인 작업</a>
+        <a href="./index.html">에뮬레이터</a>
+        <a id="nav-admin" href="./admin.html" style="display:none;">관리자</a>
+        <a href="#">요금제</a>
+        <a href="#">리퍼럴</a>
+      </nav>
+      <div class="dash-nav-right">
+        <span id="user-name-top">신동욱</span>
+        <button id="logout-btn" class="dash-logout-btn">로그아웃</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="dashboard-main">
+    <header class="dashboard-header">
+      <h1>대시보드</h1>
+      <p class="welcome-message"><span id="user-name">User</span>님 환영합니다</p>
+      <p id="subscription-info" class="subscription-inline">무료 플랜</p>
+    </header>
+
+    <section class="discord-promotion-section">
+      <div class="discord-container">
+        <div class="discord-icon">💬</div>
+        <div class="discord-content">
+          <h3>Discord 커뮤니티</h3>
+          <p>오류 건의나 새로운 업데이트 소식은 Discord에서 확인하세요.</p>
+        </div>
+        <a class="discord-join-btn" href="#" target="_blank" rel="noreferrer">Discord 참여하기</a>
+      </div>
+    </section>
+
+    <section class="dashboard-stats stats-grid">
+      <article class="stat-card"><div class="stat-value" id="credit-balance">0</div><div class="stat-label">남은 크레딧</div></article>
+      <article class="stat-card"><div class="stat-value" id="video-count">0</div><div class="stat-label">제작 영상</div></article>
+      <article class="stat-card"><div class="stat-value" id="subscription-plan">무료</div><div class="stat-label">현재 플랜</div></article>
+    </section>
+
+    <section class="create-section dashboard-content">
+      <h2 class="create-title">새 영상 만들기</h2>
+      <p class="create-subtitle">다양한 템플릿으로 바이럴 숏폼을 제작해보세요</p>
+      <div class="template-grid-v2">
+        <a id="ranking-template-btn" class="template-card-v2" href="./ranking-create.html"><span class="tag hot">HOT</span><div class="card-title">랭킹 영상</div></a>
+      </div>
+    </section>
+
+    <section class="projects-videos-section">
+      <div class="pv-container">
+        <div class="pv-box">
+          <div class="pv-header"><h3>저장된 프로젝트</h3></div>
+          <div class="pv-content" id="projects-container"></div>
+          <div class="pv-pagination" id="projects-pagination"></div>
+        </div>
+        <div class="pv-box">
+          <div class="pv-header"><h3>내가 만든 영상</h3></div>
+          <div class="pv-content" id="videos-container"></div>
+          <div class="pv-pagination" id="videos-pagination"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="promotion-section compact">
+      <div id="promotion-info-container"></div>
+      <div id="promotion-history-container"></div>
+    </section>
+  </main>
+
+  <footer class="dash-footer">
+    <h4>ShortsMaker</h4>
+    <p>이용약관 | 개인정보처리방침 | 환불정책 | 광고수신동의 철회</p>
+    <small>© 2025-2026 ShortsMaker. All rights reserved.</small>
+  </footer>
+
+  <script src="./dashboard.js?v=20260311-1"></script>
+</body>
+</html>

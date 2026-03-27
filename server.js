@@ -16,9 +16,10 @@ const { createStore } = require("./lib/store");
 const { readRequestBody, parseJsonBody, parseCookies, setCookie, clearCookie, sendJson, redirect, fetchJson } = require("./lib/http");
 
 const HOST = "0.0.0.0";
-const PORT = 3000;
+const PORT = Number(process.env.PORT || 3000);
 const ROOT = __dirname;
-const FFMPEG_PATH = "C:\\ffmpeg-8.0.1-full_build\\ffmpeg-8.0.1-full_build\\bin\\ffmpeg.exe";
+const DEFAULT_WINDOWS_FFMPEG = "C:\\ffmpeg-8.0.1-full_build\\ffmpeg-8.0.1-full_build\\bin\\ffmpeg.exe";
+const FFMPEG_PATH = process.env.FFMPEG_PATH || (process.platform === "win32" ? DEFAULT_WINDOWS_FFMPEG : "ffmpeg");
 const store = createStore();
 
 const SESSION_COOKIE = "sm_session";
@@ -524,7 +525,13 @@ function runFfmpeg(inputPath, outputPath, { fps = 24, width = null, height = nul
       reject(new Error(stderr || `ffmpeg exited with code ${code}`));
     });
 
-    ffmpeg.on("error", reject);
+    ffmpeg.on("error", (error) => {
+      if (error && error.code === "ENOENT") {
+        reject(new Error(`ffmpeg executable not found. Set FFMPEG_PATH or install ffmpeg. Current value: ${FFMPEG_PATH}`));
+        return;
+      }
+      reject(error);
+    });
   });
 }
 
@@ -1275,7 +1282,7 @@ const server = http.createServer(async (req, res) => {
 
 server.on("error", (err) => {
   if (err && err.code === "EADDRINUSE") {
-    console.error(`Port ${PORT} is already in use. Close the other process or change PORT in server.js.`);
+    console.error(`Port ${PORT} is already in use. Close the other process or change PORT/PORT env.`);
     process.exit(1);
   }
   console.error(err);
@@ -1283,7 +1290,8 @@ server.on("error", (err) => {
 });
 
 server.listen(PORT, HOST, () => {
-  console.log(`Shortsmaker local server running at http://127.0.0.1:${PORT}`);
+  console.log(`Shortsmaker server running at http://127.0.0.1:${PORT}`);
+  console.log(`Using ffmpeg: ${FFMPEG_PATH}`);
 
   const lanAddresses = getLanAddresses();
   lanAddresses.forEach((address) => {

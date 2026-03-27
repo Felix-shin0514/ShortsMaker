@@ -3,6 +3,6 @@ services:
     name: shortsmaker
     runtime: node
     plan: starter
-    buildCommand: apt-get update && apt-get install -y ffmpeg && npm install
+    buildCommand: npm install
     startCommand: npm start
     autoDeploy: true

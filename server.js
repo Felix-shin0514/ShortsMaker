@@ -5,6 +5,12 @@ const path = require("path");
 const os = require("os");
 const { spawn } = require("child_process");
 const crypto = require("crypto");
+let ffmpegStaticPath = null;
+try {
+  ffmpegStaticPath = require("ffmpeg-static");
+} catch {
+  ffmpegStaticPath = null;
+}
 try {
   require("dotenv").config();
 } catch {
@@ -19,7 +25,9 @@ const HOST = "0.0.0.0";
 const PORT = Number(process.env.PORT || 3000);
 const ROOT = __dirname;
 const DEFAULT_WINDOWS_FFMPEG = "C:\\ffmpeg-8.0.1-full_build\\ffmpeg-8.0.1-full_build\\bin\\ffmpeg.exe";
-const FFMPEG_PATH = process.env.FFMPEG_PATH || (process.platform === "win32" ? DEFAULT_WINDOWS_FFMPEG : "ffmpeg");
+const FFMPEG_PATH =
+  process.env.FFMPEG_PATH ||
+  (process.platform === "win32" ? DEFAULT_WINDOWS_FFMPEG : ffmpegStaticPath || "ffmpeg");
 const store = createStore();
 
 const SESSION_COOKIE = "sm_session";

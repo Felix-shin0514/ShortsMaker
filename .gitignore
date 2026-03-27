@@ -4,3 +4,8 @@ node_modules/
 .env
 ngrok.exe
 ngrok
+영상/
+assets/videos/
+*.mp4
+!assets/landing/
+!assets/landing/*.mp4

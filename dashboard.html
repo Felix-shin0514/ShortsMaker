@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard</title>
   <link rel="stylesheet" href="./dashboard.css" />
+  <link rel="stylesheet" href="./lang.css" />
 </head>
-<body class="dashboard-page">
+<body class="dashboard-page" data-page="dashboard">
   <header class="dash-nav">
     <div class="dash-nav-inner">
       <a class="dash-logo" href="./dashboard.html">
@@ -17,10 +18,15 @@
         <a id="nav-main-work" href="./ranking-create.html">메인 작업</a>
         <a href="./index.html">에뮬레이터</a>
         <a id="nav-admin" href="./admin.html" style="display:none;">관리자</a>
-        <a href="#">요금제</a>
-        <a href="#">리퍼럴</a>
+        <a href="./pricing.html">요금제</a>
+        <a href="./support.html">고객센터</a>
       </nav>
       <div class="dash-nav-right">
+        <div class="lang-switch" aria-label="Language switch">
+          <button class="lang-option" type="button" data-lang-option="ko">KOR</button>
+          <span class="lang-divider">/</span>
+          <button class="lang-option" type="button" data-lang-option="en">ENG</button>
+        </div>
         <span id="user-name-top">신동욱</span>
         <button id="logout-btn" class="dash-logout-btn">로그아웃</button>
       </div>
@@ -34,17 +40,6 @@
       <p id="subscription-info" class="subscription-inline">무료 플랜</p>
     </header>
 
-    <section class="discord-promotion-section">
-      <div class="discord-container">
-        <div class="discord-icon">💬</div>
-        <div class="discord-content">
-          <h3>Discord 커뮤니티</h3>
-          <p>오류 건의나 새로운 업데이트 소식은 Discord에서 확인하세요.</p>
-        </div>
-        <a class="discord-join-btn" href="#" target="_blank" rel="noreferrer">Discord 참여하기</a>
-      </div>
-    </section>
-
     <section class="dashboard-stats stats-grid">
       <article class="stat-card"><div class="stat-value" id="credit-balance">0</div><div class="stat-label">남은 크레딧</div></article>
       <article class="stat-card"><div class="stat-value" id="video-count">0</div><div class="stat-label">제작 영상</div></article>
@@ -55,7 +50,24 @@
       <h2 class="create-title">새 영상 만들기</h2>
       <p class="create-subtitle">다양한 템플릿으로 바이럴 숏폼을 제작해보세요</p>
       <div class="template-grid-v2">
-        <a id="ranking-template-btn" class="template-card-v2" href="./ranking-create.html"><span class="tag hot">HOT</span><div class="card-title">랭킹 영상</div></a>
+        <a id="ranking-template-btn" class="template-card-v2" href="./ranking-create.html">
+          <span class="tag hot">HOT</span>
+          <div class="template-preview-phone" aria-hidden="true">
+            <video
+              id="ranking-sample-video"
+              class="template-preview-video"
+              src="/assets/videos/ranking.mp4"
+              muted
+              autoplay
+              loop
+              playsinline
+              preload="metadata"
+            ></video>
+          </div>
+          <div class="template-card-content">
+            <div class="card-title">랭킹 영상</div>
+          </div>
+        </a>
       </div>
     </section>
 
@@ -78,14 +90,31 @@
       <div id="promotion-info-container"></div>
       <div id="promotion-history-container"></div>
     </section>
+
+    <section class="account-danger-section">
+      <div class="account-danger-card">
+        <div>
+          <h2>회원 탈퇴</h2>
+          <p>탈퇴하면 계정, 프로젝트, 문의 내역이 함께 삭제되며 복구되지 않습니다.</p>
+        </div>
+        <button id="delete-account-btn" class="danger-btn" type="button">회원 탈퇴</button>
+      </div>
+    </section>
   </main>
 
   <footer class="dash-footer">
     <h4>ShortsMaker</h4>
-    <p>이용약관 | 개인정보처리방침 | 환불정책 | 광고수신동의 철회</p>
+    <p>
+      <a href="./terms.html">이용약관</a> |
+      <a href="./privacy.html">개인정보처리방침</a> |
+      <a href="./refund.html">환불정책</a> |
+      <a href="./marketing.html">광고수신동의 철회</a>
+    </p>
     <small>© 2025-2026 ShortsMaker. All rights reserved.</small>
   </footer>
 
-  <script src="./dashboard.js?v=20260311-1"></script>
+  <script src="./lang.js?v=20260326-5"></script>
+  <script src="./dashboard.js?v=20260325-2"></script>
 </body>
 </html>
+

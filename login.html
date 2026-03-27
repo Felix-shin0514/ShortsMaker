@@ -3,14 +3,124 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>로그인 - ShortsMaker</title>
+  <title>ShortsMaker - AI 쇼츠 자동 제작 플랫폼</title>
   <link rel="stylesheet" href="./login.css" />
+  <link rel="stylesheet" href="./lang.css" />
 </head>
-<body class="login-page">
-  <main class="login-shell">
+<body class="login-page" data-page="login">
+  <header class="landing-header">
+    <a class="landing-brand" href="./login.html">
+      <span class="brand-accent">Shorts</span>Maker
+    </a>
+    <nav class="landing-nav">
+      <a href="./pricing.html">요금제</a>
+      <a href="./terms.html">이용약관</a>
+      <a href="./support.html">고객센터</a>
+    </nav>
+    <div class="lang-switch" aria-label="Language switch">
+      <button class="lang-option" type="button" data-lang-option="ko">KOR</button>
+      <span class="lang-divider">/</span>
+      <button class="lang-option" type="button" data-lang-option="en">ENG</button>
+    </div>
+    <button class="landing-login-btn" type="button" id="headerLoginBtn">로그인</button>
+  </header>
+
+  <main class="landing-main">
+    <section class="hero-section">
+      <div class="hero-copy">
+        <span class="hero-badge">AI Shorts Automation</span>
+        <h1>
+          <span class="hero-line">쇼츠 제작 시간을 줄이고</span>
+          <span class="hero-line">바로 업로드 가능한</span>
+          <span class="hero-line">영상까지 만듭니다</span>
+        </h1>
+        <p>
+          랭킹형 쇼츠, 바이럴 클립, 자막 합성까지 한 번에 처리합니다.<br />
+          구글 로그인만 하면 바로 제작을 시작할 수 있습니다.
+        </p>
+        <div class="hero-actions">
+          <button class="hero-primary" type="button" id="heroLoginBtn">무료로 시작하기</button>
+          <a class="hero-secondary" href="./pricing.html">요금제 보기</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-card">
+            <strong>10분 이내</strong>
+            <span>초안 완성</span>
+          </div>
+          <div class="stat-card">
+            <strong>720p / 1080p</strong>
+            <span>화질 선택</span>
+          </div>
+          <div class="stat-card">
+            <strong>고객센터 내장</strong>
+            <span>문의 관리</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-preview">
+        <div class="preview-phone preview-phone-left">
+          <div class="preview-screen">
+            <div class="preview-label">실제 제작 영상</div>
+            <video
+              class="preview-video"
+              data-storage-path="landing/shortsmaker-export-premium-1773486311787.mp4"
+              data-local-src="./assets/landing/shortsmaker-export-premium-1773486311787.mp4"
+              autoplay
+              muted
+              loop
+              playsinline
+            ></video>
+          </div>
+        </div>
+        <div class="preview-phone preview-phone-right">
+          <div class="preview-screen preview-screen-alt">
+            <div class="preview-label preview-label-secondary">실제 제작 영상</div>
+            <video
+              class="preview-video"
+              data-storage-path="landing/sunny2.mp4"
+              data-local-src="./assets/landing/sunny2.mp4"
+              autoplay
+              muted
+              loop
+              playsinline
+            ></video>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="feature-section">
+      <article class="feature-card">
+        <h2>템플릿 기반 제작</h2>
+        <p>랭킹형 쇼츠 템플릿으로 제목, 순위, 자막 배치를 빠르게 조정합니다.</p>
+      </article>
+      <article class="feature-card">
+        <h2>화질별 크레딧 차등</h2>
+        <p>Standard / Premium 두 가지 화질로 운영하고 크레딧 정책을 분리합니다.</p>
+      </article>
+      <article class="feature-card">
+        <h2>운영 기능 내장</h2>
+        <p>관리자 크레딧 지급, 고객센터 문의 관리, 플랜 반영 구조까지 포함합니다.</p>
+      </article>
+    </section>
+
+    <section class="cta-section">
+      <div class="cta-card">
+        <div>
+          <h2>로그인 후 바로 대시보드로 이동합니다</h2>
+          <p>구글 계정으로 로그인하면 작업 공간과 고객센터가 즉시 생성됩니다.</p>
+        </div>
+        <button class="hero-primary" type="button" id="ctaLoginBtn">구글로 시작하기</button>
+      </div>
+    </section>
+  </main>
+
+  <div id="login-modal" class="login-modal" aria-hidden="true">
+    <div class="login-modal-backdrop" data-close-login></div>
     <section class="login-card" role="dialog" aria-modal="true" aria-label="로그인">
       <button class="login-close" type="button" aria-label="닫기" id="closeBtn">×</button>
-      <h1 class="login-title"><span class="brand-accent">Shorts</span>Maker에 오신 것을 환영합니다!</h1>
+      <h2 class="login-title"><span class="brand-accent">Shorts</span>Maker에 오신 것을 환영합니다!</h2>
       <p class="login-subtitle">Google 계정으로 간편하게 시작하세요</p>
 
       <label class="login-checkbox">
@@ -20,16 +130,14 @@
 
       <button class="google-btn" id="googleLoginBtn" type="button">Google로 로그인/회원가입</button>
 
-      <p class="login-legal">
-        계속하면 이용약관 및 개인정보처리방침에 동의하는 것으로 간주됩니다.
-      </p>
+      <p class="login-legal">계속하면 이용약관 및 개인정보처리방침에 동의하는 것으로 간주됩니다.</p>
       <p id="loginError" class="login-error" hidden></p>
     </section>
-  </main>
+  </div>
 
-  <!-- Firebase Web SDK (Auth) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+  <script src="./lang.js?v=20260326-5"></script>
   <script src="./login.js"></script>
 </body>
 </html>

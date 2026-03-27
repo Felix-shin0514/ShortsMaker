@@ -1,0 +1,30 @@
+.lang-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid rgba(82, 134, 255, 0.35);
+  border-radius: 999px;
+  background: rgba(16, 22, 38, 0.88);
+}
+
+.lang-option {
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  padding: 0;
+}
+
+.lang-option.is-active {
+  color: #4f82ff;
+}
+
+.lang-divider {
+  color: rgba(255, 255, 255, 0.36);
+  font-size: 12px;
+  font-weight: 700;
+}

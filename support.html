@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>고객센터 - ShortsMaker</title>
+  <link rel="stylesheet" href="./dashboard.css" />
+  <link rel="stylesheet" href="./support.css" />
+  <link rel="stylesheet" href="./lang.css" />
+</head>
+<body class="dashboard-page" data-page="support">
+  <header class="dash-nav">
+    <div class="dash-nav-inner">
+      <a class="dash-logo" href="./dashboard.html">
+        <span class="dash-logo-shorts">Shorts</span><span class="dash-logo-craft">maker</span>
+      </a>
+      <nav class="dash-nav-center">
+        <a href="./dashboard.html">대시보드</a>
+        <a href="./ranking-create.html">메인 작업</a>
+        <a href="./index.html">에뮬레이터</a>
+        <a id="nav-admin" href="./admin.html" style="display:none;">관리자</a>
+        <a href="./pricing.html">요금제</a>
+        <a class="is-active" href="./support.html">고객센터</a>
+      </nav>
+      <div class="dash-nav-right">
+        <div class="lang-switch" aria-label="Language switch">
+          <button class="lang-option" type="button" data-lang-option="ko">KOR</button>
+          <span class="lang-divider">/</span>
+          <button class="lang-option" type="button" data-lang-option="en">ENG</button>
+        </div>
+        <span id="user-name-top">User</span>
+        <button id="logout-btn" class="dash-logout-btn">로그아웃</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="support-main">
+    <section class="support-hero">
+      <h1>고객센터</h1>
+      <p>문의 내용을 남기면 계정 기준으로 접수되고, 관리자 화면에서 확인할 수 있습니다.</p>
+    </section>
+
+    <section class="support-grid">
+      <article class="support-card">
+        <h2>문의 남기기</h2>
+        <form id="support-form" class="support-form">
+          <label class="support-label" for="subject-input">제목</label>
+          <input id="subject-input" class="support-input" type="text" maxlength="120" placeholder="예: 결제 문의 / 기능 오류 / 환불 요청" />
+
+          <label class="support-label" for="message-input">문의 내용</label>
+          <textarea id="message-input" class="support-textarea" rows="8" maxlength="5000" placeholder="상황을 자세히 적어주세요. 오류가 난 화면, 작업 순서, 기대한 결과를 같이 적으면 처리 속도가 빨라집니다."></textarea>
+
+          <div class="support-actions">
+            <button id="submit-btn" class="support-submit" type="submit">문의 접수</button>
+            <span id="support-status" class="support-status"></span>
+          </div>
+        </form>
+      </article>
+
+      <article class="support-card">
+        <div class="support-card-head">
+          <h2>내 문의 내역</h2>
+          <button id="refresh-btn" class="support-refresh" type="button">새로고침</button>
+        </div>
+        <div id="my-inquiries" class="support-list"></div>
+      </article>
+    </section>
+
+    <section id="admin-inquiry-section" class="support-card admin-inquiries" style="display:none;">
+      <div class="support-card-head">
+        <h2>전체 문의 관리</h2>
+        <span class="support-admin-badge">관리자</span>
+      </div>
+      <div id="admin-inquiries" class="support-list"></div>
+    </section>
+  </main>
+
+  <script src="./lang.js?v=20260326-5"></script>
+  <script src="./support.js"></script>
+</body>
+</html>

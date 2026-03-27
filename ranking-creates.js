@@ -27,6 +27,74 @@ class RankingVideoCreator {
         this.init();
     }
 
+    getLang() {
+        return typeof window.getSiteLang === 'function' ? window.getSiteLang() : 'ko';
+    }
+
+    t(ko, en) {
+        return this.getLang() === 'en' ? en : ko;
+    }
+
+    rankLabel(rank) {
+        return this.getLang() === 'en' ? `#${rank}` : `${rank}위`;
+    }
+
+    rankTitlePlaceholder(rank) {
+        return this.getLang() === 'en' ? `Enter title for #${rank}` : `${rank}위 제목 입력`;
+    }
+
+    playOrderLabel(order) {
+        return this.getLang() === 'en' ? `Play ${order}` : `${order}번째로 재생`;
+    }
+
+    playOrderCaption(order) {
+        return this.getLang() === 'en' ? `(Play ${order})` : `(${order}번째 재생)`;
+    }
+
+    rankingCountLabel(count) {
+        return this.getLang() === 'en' ? `Top ${count}` : `${count}위까지`;
+    }
+
+    refreshEditorLanguage() {
+        const rankingCountSelect = document.getElementById('rankingCount');
+        if (rankingCountSelect) {
+            Array.from(rankingCountSelect.options).forEach((option) => {
+                option.textContent = this.rankingCountLabel(Number(option.value));
+            });
+        }
+
+        document.querySelectorAll('.ranking-item').forEach((item, index) => {
+            const rank = index + 1;
+            const titleInput = item.querySelector('.rank-title');
+            const playbackLabel = item.querySelector('.playback-order label');
+            const playbackSelect = item.querySelector('.playback-order-select');
+            const durationLabel = item.querySelector('.video-duration label');
+            const durationUnit = item.querySelector('.video-duration span');
+            const uploadText = item.querySelector('.upload-label span');
+            const removeButton = item.querySelector('.remove-video');
+
+            if (titleInput) titleInput.placeholder = this.rankTitlePlaceholder(rank);
+            if (playbackLabel) playbackLabel.textContent = this.t('재생 순서:', 'Play order:');
+            if (durationLabel) durationLabel.textContent = this.t('재생 시간:', 'Duration:');
+            if (durationUnit) durationUnit.textContent = this.t('초', 'sec');
+            if (uploadText) uploadText.textContent = this.t('영상 업로드', 'Upload video');
+            if (removeButton) removeButton.textContent = this.t('제거', 'Remove');
+
+            if (playbackSelect) {
+                const selectedValue = playbackSelect.value || String(this.playbackOrder[index] || rank);
+                playbackSelect.innerHTML = this.generateOrderOptions(Number(selectedValue));
+                playbackSelect.value = selectedValue;
+            }
+        });
+
+        const generateBtn = document.getElementById('generateBtn');
+        if (generateBtn && !generateBtn.disabled) {
+            generateBtn.textContent = this.t('다음으로 →', 'Next →');
+        }
+
+        this.updatePreview();
+    }
+
     isLocalFileMode() {
         return window.location.protocol === 'file:';
     }
@@ -91,6 +159,7 @@ class RankingVideoCreator {
         await this.loadProjectIfNeeded();
         this.initializeRankingCards(); // 초기 카드 생성
         if (this.loadedDraftData) this.applyDraftToUi(this.loadedDraftData);
+        this.refreshEditorLanguage();
         this.updatePreview();
     }
 
@@ -205,6 +274,9 @@ class RankingVideoCreator {
         // 새 영상 만들기
         document.getElementById('createNewBtn')?.addEventListener('click', () => {
             this.resetForm();
+        });
+        document.addEventListener('site-language-change', () => {
+            this.refreshEditorLanguage();
         });
 
         // 배경음악 업로드
@@ -415,30 +487,30 @@ class RankingVideoCreator {
         <div class="ranking-item" data-rank="${rank}">
             <div class="rank-number">${rank}.</div>
             <div class="rank-content">
-                <input type="text" class="rank-title" data-index="${index}" placeholder="${rank}위 제목 입력" maxlength="50">
+                <input type="text" class="rank-title" data-index="${index}" placeholder="${this.rankTitlePlaceholder(rank)}" maxlength="50">
 
                 <div class="playback-order">
-                    <label>재생 순서:</label>
+                    <label>${this.t('재생 순서:', 'Play order:')}</label>
                     <select class="playback-order-select" data-rank="${rank}">
                         ${this.generateOrderOptions(rank)}
                     </select>
                 </div>
 
                 <div class="video-duration" style="margin-top: 10px;">
-                    <label>재생 시간:</label>
+                    <label>${this.t('재생 시간:', 'Duration:')}</label>
                     <input type="number" class="duration-input" data-rank="${rank}" min="1" max="60" value="10" step="1" style="width: 80px; padding: 5px; margin-right: 5px;">
-                    <span>초</span>
+                    <span>${this.t('초', 'sec')}</span>
                 </div>
 
                 <div class="video-upload-box">
                     <input type="file" class="video-input" accept="video/*" id="video${rank}" data-index="${index}">
                     <label for="video${rank}" class="upload-label">
                         <i class="fas fa-cloud-upload-alt"></i>
-                        <span>영상 업로드</span>
+                        <span>${this.t('영상 업로드', 'Upload video')}</span>
                     </label>
                     <div class="video-preview" style="display:none;">
                         <video controls></video>
-                        <button class="remove-video" type="button">제거</button>
+                        <button class="remove-video" type="button">${this.t('제거', 'Remove')}</button>
                     </div>
                 </div>
             </div>
@@ -449,7 +521,7 @@ class RankingVideoCreator {
         let options = '';
         for (let i = 1; i <= this.rankingCount; i++) {
             const selected = i === currentRank ? 'selected' : '';
-            options += `<option value="${i}" ${selected}>${i}번째로 재생</option>`;
+            options += `<option value="${i}" ${selected}>${this.playOrderLabel(i)}</option>`;
         }
         return options;
     }
@@ -489,7 +561,7 @@ class RankingVideoCreator {
             // 드래그 앤 드롭 지원
             uploadLabel.addEventListener('dragover', (e) => {
                 e.preventDefault();
-                uploadLabel.style.borderColor = '#ff6b00';
+                uploadLabel.style.borderColor = '#3b82f6';
                 uploadLabel.style.background = '#fff5f0';
             });
 
@@ -723,7 +795,7 @@ class RankingVideoCreator {
             // 이 랭킹의 재생 순서 찾기
             const playbackPosition = this.playbackOrder[i];
 
-            let text = `${rank}위`;
+            let text = this.rankLabel(rank);
             if (this.titles[i]) {
                 text += ` ${this.titles[i]}`;
             }
@@ -735,7 +807,7 @@ class RankingVideoCreator {
 
             // 재생 순서 표시 (작은 글씨로)
             ctx.font = '20px Pretendard, sans-serif';
-            const orderText = `(${playbackPosition}번째 재생)`;
+            const orderText = this.playOrderCaption(playbackPosition);
             const orderX = x + ctx.measureText(text).width + 20;
             ctx.strokeText(orderText, orderX, y);
             ctx.fillText(orderText, orderX, y);

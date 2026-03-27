@@ -5,9 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ranking Create</title>
   <link rel="stylesheet" href="./shared-header.css" />
-  <link rel="stylesheet" href="./ranking.css" />
+  <link rel="stylesheet" href="./ranking.css?v=20260326-3" />
+  <link rel="stylesheet" href="./lang.css" />
 </head>
-<body class="ranking-create-page">
+<body class="ranking-create-page" data-page="editor">
   <header class="sc-navbar">
     <a class="sc-brand" href="./dashboard.html">
       <span class="sc-brand-shorts">Shorts</span><span class="sc-brand-craft">maker</span>
@@ -16,6 +17,11 @@
       <a href="./dashboard.html">대시보드</a>
       <a class="is-active" href="./ranking-create.html">메인 작업</a>
       <a href="./index.html">에뮬레이터</a>
+      <div class="lang-switch" aria-label="Language switch">
+        <button class="lang-option" type="button" data-lang-option="ko">KOR</button>
+        <span class="lang-divider">/</span>
+        <button class="lang-option" type="button" data-lang-option="en">ENG</button>
+      </div>
     </nav>
   </header>
   <main class="ranking-main">
@@ -100,7 +106,7 @@
             <button id="createNewBtn" type="button">새 영상 만들기</button>
           </div>
           <div id="uploadProgressContainer" style="display:none; margin-top:10px;">
-            <div id="uploadProgressFill" style="height:8px; width:0; background:#ff6b00;"></div>
+            <div id="uploadProgressFill" style="height:8px; width:0; background:#3b82f6;"></div>
             <p id="uploadProgressText"></p>
           </div>
           <div id="resultSection" style="display:none;"></div>
@@ -109,6 +115,10 @@
     </div>
   </main>
 
+  <script src="./lang.js?v=20260326-5"></script>
   <script src="./ranking-creates.js"></script>
 </body>
 </html>
+
+
+

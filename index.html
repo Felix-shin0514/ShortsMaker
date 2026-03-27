@@ -6,8 +6,9 @@
   <title>Ranking Emulator</title>
   <link rel="stylesheet" href="./shared-header.css" />
   <link rel="stylesheet" href="./ranking-emulator.css" />
+  <link rel="stylesheet" href="./lang.css" />
 </head>
-<body>
+<body data-page="emulator">
   <header class="sc-navbar">
     <a id="nav-dashboard-brand" class="sc-brand" href="./dashboard.html">
       <span class="sc-brand-shorts">Shorts</span><span class="sc-brand-craft">maker</span>
@@ -16,44 +17,49 @@
       <a id="nav-dashboard-link" href="./dashboard.html">대시보드</a>
       <a id="nav-main-work-link" href="./ranking-create.html">메인 작업</a>
       <a class="is-active" href="./index.html">에뮬레이터</a>
+      <div class="lang-switch" aria-label="Language switch">
+        <button class="lang-option" type="button" data-lang-option="ko">KOR</button>
+        <span class="lang-divider">/</span>
+        <button class="lang-option" type="button" data-lang-option="en">ENG</button>
+      </div>
     </nav>
   </header>
   <main class="ranking-emulator-main">
     <aside class="ranking-left-panel">
       <section class="settings-panel">
         <div class="settings-panel-content">
-          <h2>프로젝트 설정</h2>
+          <h2 id="project-settings-title">프로젝트 설정</h2>
           <div class="setting-section">
-            <label class="setting-label">랭킹 영상</label>
+            <label id="ranking-video-label" class="setting-label">랭킹 영상</label>
             <div class="collapsible-section expanded">
               <div class="collapsible-header">
-                <div class="collapsible-title">타이틀 설정</div>
+                <div id="title-settings-title" class="collapsible-title">타이틀 설정</div>
                 <span class="collapsible-arrow expanded">▼</span>
               </div>
               <div class="collapsible-content expanded">
                 <div class="collapsible-inner">
-                  <label>첫 번째 줄</label>
+                  <label id="title-line-1-label">첫 번째 줄</label>
                   <input id="title-line-1-input" type="text" class="setting-input" value="2026년 최고의" />
-                  <label>두 번째 줄</label>
+                  <label id="title-line-2-label">두 번째 줄</label>
                   <input id="title-line-2-input" type="text" class="setting-input" value="동물 레전드 TOP 5" />
-                  <label>제목 X 위치</label>
+                  <label id="title-x-offset-label">제목 X 위치</label>
                   <input id="title-x-offset" type="range" min="-160" max="160" value="0" />
-                  <label>제목 Y 위치</label>
+                  <label id="title-y-offset-label">제목 Y 위치</label>
                   <input id="title-y-offset" type="range" min="-80" max="120" value="0" />
-                  <label>첫 번째 줄 크기</label>
+                  <label id="title-line1-font-size-label">첫 번째 줄 크기</label>
                   <input id="title-line1-font-size" type="range" min="16" max="48" value="24" />
-                  <label>두 번째 줄 크기</label>
+                  <label id="title-line2-font-size-label">두 번째 줄 크기</label>
                   <input id="title-line2-font-size" type="range" min="20" max="64" value="32" />
-                  <label>제목 굵기</label>
+                  <label id="title-font-weight-label">제목 굵기</label>
                   <select id="title-font-weight" class="setting-select">
                     <option value="600">굵게 (600)</option>
                     <option value="700">더 굵게 (700)</option>
                     <option value="800">강하게 (800)</option>
                     <option value="900" selected>최대 (900)</option>
                   </select>
-                  <label>첫 번째 줄 색상</label>
+                  <label id="title-line1-color-label">첫 번째 줄 색상</label>
                   <input id="title-line1-color" type="color" value="#ff2727" />
-                  <label>두 번째 줄 색상</label>
+                  <label id="title-line2-color-label">두 번째 줄 색상</label>
                   <input id="title-line2-color" type="color" value="#efefef" />
                 </div>
               </div>
@@ -61,16 +67,16 @@
 
             <div class="collapsible-section">
               <div class="collapsible-header">
-                <div class="collapsible-title">레이아웃 위치 조절</div>
+                <div id="layout-controls-title" class="collapsible-title">레이아웃 위치 조절</div>
                 <span class="collapsible-arrow">▼</span>
               </div>
               <div class="collapsible-content">
                 <div class="collapsible-inner">
-                  <label>상단 여백 <span id="layout-top-padding-value">0</span></label>
+                  <label id="layout-top-padding-label">상단 여백 <span id="layout-top-padding-value">0</span></label>
                   <input id="layout-top-padding" type="range" min="0" max="160" value="0" />
-                  <label>영상 크기 <span id="video-scale-value">100%</span></label>
+                  <label id="video-scale-label">영상 크기 <span id="video-scale-value">100%</span></label>
                   <input id="video-scale" type="range" min="70" max="130" value="100" />
-                  <label>영상 Y 위치 <span id="video-y-offset-value">0</span></label>
+                  <label id="video-y-offset-label">영상 Y 위치 <span id="video-y-offset-value">0</span></label>
                   <input id="video-y-offset" type="range" min="-240" max="240" value="0" />
                 </div>
               </div>
@@ -78,27 +84,27 @@
 
             <div class="collapsible-section">
               <div class="collapsible-header">
-                <div class="collapsible-title">랭킹 목록 설정</div>
+                <div id="ranking-list-settings-title" class="collapsible-title">랭킹 목록 설정</div>
                 <span class="collapsible-arrow">▼</span>
               </div>
               <div class="collapsible-content">
                 <div class="collapsible-inner">
-                  <label>목록 X 위치</label>
+                  <label id="ranking-list-x-label">목록 X 위치</label>
                   <input id="ranking-list-x-offset" type="range" min="-120" max="160" value="0" />
-                  <label>목록 Y 위치</label>
+                  <label id="ranking-list-y-label">목록 Y 위치</label>
                   <input id="ranking-list-y-offset" type="range" min="-160" max="160" value="0" />
-                  <label>글자 크기</label>
+                  <label id="ranking-list-font-size-label">글자 크기</label>
                   <input id="ranking-list-font-size" type="range" min="12" max="32" value="16" />
-                  <label>글자 굵기</label>
+                  <label id="ranking-list-font-weight-label">글자 굵기</label>
                   <select id="ranking-list-font-weight" class="setting-select">
                     <option value="600">굵게 (600)</option>
                     <option value="700">더 굵게 (700)</option>
                     <option value="800">강하게 (800)</option>
                     <option value="900" selected>최대 (900)</option>
                   </select>
-                  <label>기본 색상</label>
+                  <label id="ranking-list-color-label">기본 색상</label>
                   <input id="ranking-list-color" type="color" value="#ffffff" />
-                  <label>활성 색상</label>
+                  <label id="ranking-list-active-color-label">활성 색상</label>
                   <input id="ranking-list-active-color" type="color" value="#ff2de1" />
                 </div>
               </div>
@@ -106,12 +112,12 @@
 
             <div class="collapsible-section">
               <div class="collapsible-header">
-                <div class="collapsible-title">배경음악 (전체 영상)</div>
+                <div id="background-music-title" class="collapsible-title">배경음악 (전체 영상)</div>
                 <span class="collapsible-arrow">▼</span>
               </div>
               <div class="collapsible-content">
                 <div class="collapsible-inner">
-                  <label>볼륨</label>
+                  <label id="bgm-volume-label">볼륨</label>
                   <input id="bgm-volume" type="range" min="0" max="100" value="30" />
                 </div>
               </div>
@@ -119,13 +125,13 @@
 
             <div class="collapsible-section">
               <div class="collapsible-header">
-                <div class="collapsible-title">전환 검은 화면</div>
+                <div id="transition-black-title" class="collapsible-title">전환 검은 화면</div>
                 <span class="collapsible-arrow">▼</span>
               </div>
               <div class="collapsible-content">
                 <div class="collapsible-inner">
                   <div class="checkbox-row">
-                    <label><input id="transition-black-enabled" type="checkbox" /> 사용</label>
+                    <label><input id="transition-black-enabled" type="checkbox" /> <span id="transition-black-enabled-text">사용</span></label>
                   </div>
                 </div>
               </div>
@@ -133,7 +139,7 @@
 
             <div class="collapsible-section">
               <div class="collapsible-header">
-                <div class="collapsible-title">배경 색상</div>
+                <div id="background-color-title" class="collapsible-title">배경 색상</div>
                 <span class="collapsible-arrow">▼</span>
               </div>
               <div class="collapsible-content">
@@ -145,22 +151,22 @@
 
             <div class="collapsible-section">
               <div class="collapsible-header">
-                <div class="collapsible-title">자막 설정 (전체 영상)</div>
+                <div id="caption-settings-title" class="collapsible-title">자막 설정 (전체 영상)</div>
                 <span class="collapsible-arrow">▼</span>
               </div>
               <div class="collapsible-content">
                 <div class="collapsible-inner">
-                  <label>위치</label>
+                  <label id="subtitle-position-label">위치</label>
                   <select id="subtitle-style-position" class="setting-select">
                     <option value="bottom">하단</option>
                     <option value="middle">중앙</option>
                     <option value="top">상단</option>
                   </select>
-                  <label>세로 위치 조정</label>
+                  <label id="subtitle-y-offset-label">세로 위치 조정</label>
                   <input id="subtitle-y-offset" type="range" min="-160" max="160" value="0" />
-                  <label>자막 폰트 크기</label>
+                  <label id="subtitle-font-size-label">자막 폰트 크기</label>
                   <input id="subtitle-font-size" type="range" min="16" max="56" value="26" />
-                  <label>폰트 굵기</label>
+                  <label id="subtitle-font-weight-label">폰트 굵기</label>
                   <select id="subtitle-font-weight" class="setting-select">
                     <option value="500">보통 (500)</option>
                     <option value="600">굵게 (600)</option>
@@ -168,14 +174,14 @@
                     <option value="800" selected>강하게 (800)</option>
                     <option value="900">최대 (900)</option>
                   </select>
-                  <label>자막 색상</label>
+                  <label id="subtitle-text-color-label">자막 색상</label>
                   <input id="subtitle-text-color" type="color" value="#ffffff" />
-                  <label>자막 배경색</label>
+                  <label id="subtitle-bg-color-label">자막 배경색</label>
                   <input id="subtitle-bg-color" type="color" value="#000000" />
-                  <label>배경 투명도</label>
+                  <label id="subtitle-bg-opacity-label">배경 투명도</label>
                   <input id="subtitle-bg-opacity" type="range" min="0" max="100" value="0" />
                   <div class="checkbox-row">
-                    <label><input id="subtitle-shadow-enabled" type="checkbox" checked /> 텍스트 그림자</label>
+                    <label><input id="subtitle-shadow-enabled" type="checkbox" checked /> <span id="subtitle-shadow-enabled-text">텍스트 그림자</span></label>
                   </div>
                 </div>
               </div>
@@ -191,7 +197,7 @@
 
     <section class="ranking-center-panel">
       <div class="ranking-editor-shell">
-        <h2>랭킹 아이템</h2>
+        <h2 id="ranking-items-title">랭킹 아이템</h2>
         <p id="ranking-item-count" class="ranking-subtitle">5개의 비디오 클립</p>
 
         <div class="ranking-item-list" id="rankingItemList"></div>
@@ -199,7 +205,7 @@
         <div class="timeline-shell">
           <div class="timeline-topbar">
             <div class="timeline-left-controls">
-              <span class="timeline-label">자막</span>
+              <span id="timeline-label" class="timeline-label">자막</span>
               <select id="subtitle-position-select" class="timeline-select">
                 <option value="bottom">하단</option>
                 <option value="middle">중앙</option>
@@ -235,6 +241,35 @@
     </aside>
   </main>
 
-  <script src="./app.js"></script>
+  <!-- Export quality modal -->
+  <div id="quality-modal" class="quality-modal" aria-hidden="true">
+    <div class="quality-modal-backdrop" data-quality-close></div>
+    <div class="quality-modal-card" role="dialog" aria-modal="true" aria-labelledby="quality-modal-title">
+      <h3 id="quality-modal-title" class="quality-modal-title">화질 선택</h3>
+      <p class="quality-modal-subtitle">영상 품질과 크레딧 소모량을 선택하세요</p>
+
+      <div class="quality-options">
+        <button type="button" class="quality-option" data-quality="standard">
+          <div class="quality-option-title">Standard</div>
+          <div class="quality-option-desc">30fps · 720p · <span class="credit-plus">100 크레딧/분</span></div>
+        </button>
+        <button type="button" class="quality-option is-featured" data-quality="premium">
+          <div class="quality-option-title">
+            Premium <span class="quality-badge">추천</span>
+          </div>
+          <div class="quality-option-desc">60fps · 1080p · <span class="credit-plus">200 크레딧/분</span></div>
+        </button>
+      </div>
+
+      <div class="quality-modal-footer">
+        <div id="quality-modal-hint" class="quality-modal-hint"></div>
+        <button type="button" class="quality-cancel" data-quality-close>취소</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="./lang.js?v=20260326-5"></script>
+  <script src="./app.js?v=20260326-4"></script>
 </body>
 </html>
+

@@ -4,11 +4,11 @@
   "version": "0.0.0",
   "type": "commonjs",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "migrate:firestore": "node scripts/migrate-json-to-firestore.js"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
     "firebase-admin": "^13.0.2"
   }
 }
-

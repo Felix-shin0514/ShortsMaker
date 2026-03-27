@@ -5,7 +5,7 @@ function escapeHtml(text) {
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
-    .replaceAll("\"", "&quot;")
+    .replaceAll('"', "&quot;")
     .replaceAll("'", "&#39;");
 }
 
@@ -27,6 +27,17 @@ function setStatus(text) {
   if (el) el.textContent = text || "";
 }
 
+async function readApiError(res) {
+  const text = await res.text().catch(() => "");
+  if (!text) return "";
+  try {
+    const data = JSON.parse(text);
+    return data.detail || data.error || "";
+  } catch {
+    return text.slice(0, 200);
+  }
+}
+
 async function ensureAdmin() {
   const res = await fetch("/api/user/info");
   if (res.status === 401) {
@@ -34,11 +45,13 @@ async function ensureAdmin() {
     return null;
   }
   if (!res.ok) return null;
+
   const info = await res.json();
   if (!info.isAdmin) {
     window.location.href = "/dashboard.html";
     return null;
   }
+
   const nameTop = document.getElementById("admin-name-top");
   if (nameTop) nameTop.textContent = info.displayName || "Admin";
   return info;
@@ -47,8 +60,11 @@ async function ensureAdmin() {
 async function fetchUsers() {
   const res = await fetch("/api/admin/users");
   if (!res.ok) {
-    if (res.status === 403) setStatus("권한이 없습니다.");
-    else setStatus("사용자 목록을 불러오지 못했습니다.");
+    if (res.status === 403) {
+      setStatus("관리자 권한이 없습니다.");
+    } else {
+      setStatus("사용자 목록을 불러오지 못했습니다.");
+    }
     return [];
   }
   const data = await res.json();
@@ -58,98 +74,157 @@ async function fetchUsers() {
 function renderUsers(filterText = "") {
   const tbody = document.getElementById("usersTbody");
   if (!tbody) return;
+
   const q = (filterText || "").trim().toLowerCase();
   const filtered = q
     ? allUsers.filter((u) => (u.email || "").toLowerCase().includes(q) || (u.displayName || "").toLowerCase().includes(q))
     : allUsers;
 
   tbody.innerHTML = filtered
-    .map((u) => {
-      return `
+    .map(
+      (u) => `
         <tr data-user-id="${escapeHtml(u.id)}">
-          <td>${escapeHtml(u.displayName || "User")}</td>
-          <td>${escapeHtml(u.email || "")}</td>
-          <td class="admin-credit" data-credit>${Number(u.credits || 0).toLocaleString()}</td>
+          <td>${escapeHtml(u.displayName || "-")}</td>
+          <td>${escapeHtml(u.email || "-")}</td>
+          <td>${Number(u.credits || 0).toLocaleString("ko-KR")}</td>
           <td>
-            <div class="credit-actions">
-              <input type="number" step="1" inputmode="numeric" placeholder="예: 100" data-delta />
-              <button type="button" data-action="give">지급</button>
-              <button type="button" class="is-danger" data-action="take">회수</button>
-              <button type="button" data-action="set">설정</button>
+            <div class="admin-credit-actions">
+              <input class="admin-credit-input" type="number" step="1" placeholder="예: 100" />
+              <button class="admin-small-btn" data-action="grant">지급</button>
+              <button class="admin-small-btn danger" data-action="revoke">회수</button>
             </div>
           </td>
-          <td>${escapeHtml(formatDate(u.createdAt))}</td>
-          <td>${escapeHtml(formatDate(u.lastSeenAt))}</td>
+          <td>
+            <div class="admin-setting-actions">
+              <button class="admin-small-btn" data-action="set">설정</button>
+              <button class="admin-small-btn danger" data-action="delete">탈퇴</button>
+            </div>
+          </td>
+          <td>${formatDate(u.createdAt)}</td>
+          <td>${formatDate(u.lastSeenAt)}</td>
         </tr>
-      `;
-    })
+      `
+    )
     .join("");
+}
 
-  tbody.querySelectorAll("button[data-action]").forEach((btn) => {
-    btn.addEventListener("click", async () => {
-      const tr = btn.closest("tr");
-      const userId = tr?.getAttribute("data-user-id") || "";
-      const input = tr?.querySelector("input[data-delta]");
-      const raw = (input?.value || "").trim();
-      const value = raw ? Number(raw) : 0;
-      if (!Number.isFinite(value) || !Number.isInteger(value)) {
-        alert("정수 크레딧만 입력해 주세요.");
-        return;
-      }
+async function patchCredits(userId, action, amount) {
+  const payload =
+    action === "set"
+      ? { set: amount }
+      : { delta: action === "grant" ? amount : -amount };
 
-      const action = btn.getAttribute("data-action");
-      let payload;
-      if (action === "give") payload = { delta: Math.abs(value) };
-      else if (action === "take") payload = { delta: -Math.abs(value) };
-      else payload = { set: value };
+  const res = await fetch(`/api/admin/users/${encodeURIComponent(userId)}/credits`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
 
-      setStatus("처리 중...");
-      try {
-        const res = await fetch(`/api/admin/users/${encodeURIComponent(userId)}/credits`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok || !data.success) {
-          setStatus("실패했습니다.");
+  if (!res.ok) {
+    const detail = await readApiError(res);
+    throw new Error(detail || "credit_update_failed");
+  }
+}
+
+async function deleteUser(userId) {
+  const res = await fetch(`/api/admin/users/${encodeURIComponent(userId)}`, {
+    method: "DELETE"
+  });
+  if (!res.ok) {
+    const detail = await readApiError(res);
+    throw new Error(detail || "user_delete_failed");
+  }
+}
+
+function bindTableActions() {
+  const tbody = document.getElementById("usersTbody");
+  if (!tbody) return;
+
+  tbody.addEventListener("click", async (event) => {
+    const button = event.target.closest("button[data-action]");
+    if (!button) return;
+
+    const row = button.closest("tr[data-user-id]");
+    if (!row) return;
+
+    const userId = row.dataset.userId;
+    const amountInput = row.querySelector(".admin-credit-input");
+    const amount = Number(amountInput?.value || 0);
+    const action = button.dataset.action;
+
+    try {
+      if (action === "grant" || action === "revoke" || action === "set") {
+        if (!Number.isFinite(amount) || !Number.isInteger(amount) || amount < 0 || (action !== "set" && amount <= 0)) {
+          setStatus("유효한 크레딧 수치를 입력해주세요.");
           return;
         }
 
-        const idx = allUsers.findIndex((u) => u.id === userId);
-        if (idx >= 0) allUsers[idx].credits = data.user.credits;
-
-        const creditEl = tr?.querySelector("[data-credit]");
-        if (creditEl) creditEl.textContent = Number(data.user.credits || 0).toLocaleString();
-        setStatus("완료");
-      } catch (e) {
-        console.error(e);
-        setStatus("오류가 발생했습니다.");
+        button.disabled = true;
+        await patchCredits(userId, action, amount);
+        setStatus("크레딧 조정이 반영되었습니다.");
+        allUsers = await fetchUsers();
+        renderUsers(document.getElementById("searchInput")?.value || "");
+        return;
       }
-    });
+
+      if (action === "delete") {
+        if (!confirm("해당 사용자를 탈퇴 처리하시겠습니까? 관련 데이터도 함께 삭제됩니다.")) return;
+        button.disabled = true;
+        await deleteUser(userId);
+        setStatus("사용자 탈퇴가 완료되었습니다.");
+        allUsers = await fetchUsers();
+        renderUsers(document.getElementById("searchInput")?.value || "");
+      }
+    } catch (err) {
+      setStatus(err.message || "작업 처리 중 오류가 발생했습니다.");
+    } finally {
+      button.disabled = false;
+    }
   });
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
-  await ensureAdmin();
+function bindSearch() {
+  const input = document.getElementById("searchInput");
+  if (!input) return;
+  input.addEventListener("input", () => renderUsers(input.value));
+}
 
-  const logoutBtn = document.getElementById("logout-btn");
-  if (logoutBtn) logoutBtn.addEventListener("click", () => (window.location.href = "/logout"));
-
-  const search = document.getElementById("searchInput");
-  if (search) search.addEventListener("input", () => renderUsers(search.value));
-
-  const refresh = document.getElementById("refreshBtn");
-  if (refresh) refresh.addEventListener("click", async () => {
-    setStatus("불러오는 중...");
-    allUsers = await fetchUsers();
-    renderUsers(search?.value || "");
-    setStatus(`총 ${allUsers.length.toLocaleString()}명`);
+function bindRefresh() {
+  const btn = document.getElementById("refreshBtn");
+  if (!btn) return;
+  btn.addEventListener("click", async () => {
+    btn.disabled = true;
+    try {
+      allUsers = await fetchUsers();
+      renderUsers(document.getElementById("searchInput")?.value || "");
+      setStatus("");
+    } finally {
+      btn.disabled = false;
+    }
   });
+}
 
-  setStatus("불러오는 중...");
+function bindLogout() {
+  const btn = document.getElementById("logout-btn");
+  if (!btn) return;
+  btn.addEventListener("click", async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } finally {
+      window.location.href = "/login.html";
+    }
+  });
+}
+
+(async function initAdminPage() {
+  const admin = await ensureAdmin();
+  if (!admin) return;
+
+  bindLogout();
+  bindSearch();
+  bindRefresh();
+  bindTableActions();
+
   allUsers = await fetchUsers();
-  renderUsers("");
-  setStatus(`총 ${allUsers.length.toLocaleString()}명`);
-});
-
+  renderUsers();
+})();

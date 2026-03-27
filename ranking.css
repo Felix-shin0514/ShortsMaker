@@ -1,4 +1,10 @@
-﻿/* ??궧 ?곸긽 ?쒖옉 ?섏씠吏 ?ㅽ???*/
+﻿html,
+body.ranking-create-page {
+    background: #0a0a0a;
+    color: var(--text-primary);
+    overflow-x: hidden;
+}
+/* ??궧 ?곸긽 ?쒖옉 ?섏씠吏 ?ㅽ???*/
 
 /* ===========================
    CSS Variables
@@ -15,14 +21,14 @@
 
     --border-subtle: rgba(255, 255, 255, 0.06);
     --border-default: rgba(255, 255, 255, 0.1);
-    --border-focus: #ff6b00;
+    --border-focus: #3b82f6;
 
     --text-primary: #fff;
     --text-secondary: #ccc;
     --text-tertiary: #888;
 
-    --primary: #ff6b00;
-    --primary-hover: #ff8500;
+    --primary: #3b82f6;
+    --primary-hover: #2563eb;
 }
 
 /* ===========================
@@ -46,7 +52,7 @@ body.ranking-create-page .back-button {
 }
 
 body.ranking-create-page .back-button:hover {
-    background: rgba(255, 107, 0, 0.1);
+    background: rgba(59, 130, 246, 0.1);
     border-color: var(--primary);
     transform: translateX(-2px);
 }
@@ -61,9 +67,10 @@ body.ranking-create-page .ranking-main {
 /* 3??洹몃━???덉씠?꾩썐 */
 body.ranking-create-page .editor-container {
     display: grid;
-    grid-template-columns: 320px 1fr 600px;
-    gap: 24px;
-    max-width: 1800px;
+    grid-template-columns: 250px minmax(0, 1fr) 560px;
+    gap: 20px;
+    max-width: none;
+    width: 100%;
     margin: 0 auto;
 }
 
@@ -74,7 +81,7 @@ body.ranking-create-page .settings-panel {
     border-radius: 0;
     padding: var(--spacing-lg);
     height: fit-content;
-    max-height: calc(100vh - 120px);
+    max-height: calc(100dvh - 120px);
     overflow-y: auto;
 }
 
@@ -86,7 +93,7 @@ body.ranking-create-page .content-editor {
     padding: var(--spacing-lg);
     display: flex;
     flex-direction: column;
-    max-height: calc(100vh - 120px);
+    max-height: calc(100dvh - 120px);
     overflow-y: auto;
 }
 
@@ -99,7 +106,7 @@ body.ranking-create-page .preview-panel {
     display: flex;
     flex-direction: column;
     align-items: center;
-    max-height: calc(100vh - 120px);
+    max-height: calc(100dvh - 120px);
     overflow-y: auto;
 }
 
@@ -182,7 +189,7 @@ body.ranking-create-page .editor-section h3 {
     outline: none;
     border-color: var(--border-focus);
     background: #222;
-    box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.1);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .form-group {
@@ -193,14 +200,14 @@ body.ranking-create-page .editor-section h3 {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 600;
-    color: #ff6b00;
+    color: #3b82f6;
     font-size: 0.95rem;
 }
 
 .form-group select {
     width: 100%;
     padding: 0.75rem;
-    border: 1px solid rgba(255, 107, 0, 0.3);
+    border: 1px solid rgba(59, 130, 246, 0.3);
     border-radius: 8px;
     font-size: 1rem;
     background: rgba(0, 0, 0, 0.5);
@@ -210,8 +217,8 @@ body.ranking-create-page .editor-section h3 {
 
 .form-group select:focus {
     outline: none;
-    border-color: #ff6b00;
-    box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.1);
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .form-group select option {
@@ -229,7 +236,7 @@ body.ranking-create-page .editor-section h3 {
 .form-group input[type="number"] {
     width: 100%;
     padding: 0.75rem;
-    border: 1px solid rgba(255, 107, 0, 0.3);
+    border: 1px solid rgba(59, 130, 246, 0.3);
     border-radius: 8px;
     font-size: 1rem;
     background: rgba(0, 0, 0, 0.5);
@@ -254,14 +261,14 @@ body.ranking-create-page .editor-section h3 {
 }
 
 .ranking-item:hover {
-    border-color: rgba(255, 107, 0, 0.3);
+    border-color: rgba(59, 130, 246, 0.3);
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
 }
 
 .rank-number {
     font-size: 2rem;
     font-weight: bold;
-    color: #ff6b00;
+    color: #3b82f6;
     min-width: 50px;
 }
 
@@ -273,7 +280,7 @@ body.ranking-create-page .editor-section h3 {
     width: 100%;
     padding: 0.75rem;
     margin-bottom: 1rem;
-    border: 1px solid rgba(255, 107, 0, 0.3);
+    border: 1px solid rgba(59, 130, 246, 0.3);
     border-radius: 8px;
     background: rgba(0, 0, 0, 0.7);
     color: #fff;
@@ -283,8 +290,8 @@ body.ranking-create-page .editor-section h3 {
 
 .rank-title:focus {
     outline: none;
-    border-color: #ff6b00;
-    box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.1);
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 /* ?ъ깮 ?쒖꽌 ?좏깮 */
@@ -294,13 +301,13 @@ body.ranking-create-page .editor-section h3 {
     gap: 1rem;
     margin-bottom: 1rem;
     padding: 0.75rem;
-    background: rgba(255, 107, 0, 0.05);
-    border: 1px solid rgba(255, 107, 0, 0.2);
+    background: rgba(59, 130, 246, 0.05);
+    border: 1px solid rgba(59, 130, 246, 0.2);
     border-radius: 8px;
 }
 
 .playback-order label {
-    color: #ff6b00;
+    color: #3b82f6;
     font-weight: 600;
     font-size: 0.95rem;
     white-space: nowrap;
@@ -311,7 +318,7 @@ body.ranking-create-page .editor-section h3 {
     padding: 0.5rem;
     background: rgba(0, 0, 0, 0.7);
     color: #fff;
-    border: 1px solid rgba(255, 107, 0, 0.3);
+    border: 1px solid rgba(59, 130, 246, 0.3);
     border-radius: 6px;
     font-size: 0.95rem;
     cursor: pointer;
@@ -319,14 +326,14 @@ body.ranking-create-page .editor-section h3 {
 }
 
 .playback-order-select:hover {
-    border-color: #ff6b00;
-    background: rgba(255, 107, 0, 0.1);
+    border-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.1);
 }
 
 .playback-order-select:focus {
     outline: none;
-    border-color: #ff6b00;
-    box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.2);
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
 }
 
 .playback-order-select option {
@@ -338,7 +345,7 @@ body.ranking-create-page .editor-section h3 {
 /* 鍮꾨뵒???낅줈??諛뺤뒪 */
 .video-upload-box {
     position: relative;
-    border: 2px dashed rgba(255, 107, 0, 0.3);
+    border: 2px dashed rgba(59, 130, 246, 0.3);
     border-radius: 8px;
     padding: 2rem;
     text-align: center;
@@ -347,8 +354,8 @@ body.ranking-create-page .editor-section h3 {
 }
 
 .video-upload-box:hover {
-    border-color: #ff6b00;
-    background: rgba(255, 107, 0, 0.05);
+    border-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.05);
 }
 
 .video-input {
@@ -366,7 +373,7 @@ body.ranking-create-page .editor-section h3 {
 }
 
 .upload-label:hover {
-    color: #ff6b00;
+    color: #3b82f6;
 }
 
 .upload-label i {
@@ -432,8 +439,8 @@ body.ranking-create-page .editor-section h3 {
 .btn-secondary {
     padding: 0.75rem 1.5rem;
     background: transparent;
-    color: #ff6b00;
-    border: 2px solid #ff6b00;
+    color: #3b82f6;
+    border: 2px solid #3b82f6;
     border-radius: 8px;
     cursor: pointer;
     font-size: 1rem;
@@ -445,15 +452,15 @@ body.ranking-create-page .editor-section h3 {
 }
 
 .btn-secondary:hover {
-    background: #ff6b00;
+    background: #3b82f6;
     color: #fff;
     transform: translateY(-2px);
-    box-shadow: 0 5px 20px rgba(255, 107, 0, 0.4);
+    box-shadow: 0 5px 20px rgba(59, 130, 246, 0.4);
 }
 
 .btn-generate {
     padding: 1rem 2rem;
-    background: linear-gradient(135deg, #ff6b00, #ff8500);
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
     color: white;
     border: none;
     border-radius: 8px;
@@ -464,12 +471,12 @@ body.ranking-create-page .editor-section h3 {
     display: inline-flex;
     align-items: center;
     gap: 0.75rem;
-    box-shadow: 0 5px 20px rgba(255, 107, 0, 0.4);
+    box-shadow: 0 5px 20px rgba(59, 130, 246, 0.4);
 }
 
 .btn-generate:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 30px rgba(255, 107, 0, 0.5);
+    box-shadow: 0 8px 30px rgba(59, 130, 246, 0.5);
 }
 
 .btn-generate:disabled {
@@ -504,13 +511,13 @@ body.ranking-create-page .editor-section h3 {
     padding: 2rem;
     background: rgba(20, 20, 20, 0.9);
     border-radius: 12px;
-    border: 1px solid rgba(255, 107, 0, 0.2);
+    border: 1px solid rgba(59, 130, 246, 0.2);
 }
 
 .progress-bar {
     width: 100%;
     height: 30px;
-    background: rgba(255, 107, 0, 0.1);
+    background: rgba(59, 130, 246, 0.1);
     border-radius: 15px;
     overflow: hidden;
     margin-bottom: 1rem;
@@ -518,10 +525,10 @@ body.ranking-create-page .editor-section h3 {
 
 .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #ff6b00, #ff8500);
+    background: linear-gradient(90deg, #3b82f6, #2563eb);
     border-radius: 15px;
     transition: width 0.3s ease;
-    box-shadow: 0 0 20px rgba(255, 107, 0, 0.5);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
 }
 
 .progress-text {
@@ -538,11 +545,11 @@ body.ranking-create-page .editor-section h3 {
     background: rgba(20, 20, 20, 0.9);
     border-radius: 12px;
     text-align: center;
-    border: 1px solid rgba(255, 107, 0, 0.2);
+    border: 1px solid rgba(59, 130, 246, 0.2);
 }
 
 .result-container h2 {
-    color: #ff6b00;
+    color: #3b82f6;
     margin-bottom: 2rem;
     font-size: 2rem;
 }
@@ -580,8 +587,8 @@ body.ranking-create-page .editor-section h3 {
 .spinner {
     width: 50px;
     height: 50px;
-    border: 5px solid rgba(255, 107, 0, 0.3);
-    border-top-color: #ff6b00;
+    border: 5px solid rgba(59, 130, 246, 0.3);
+    border-top-color: #3b82f6;
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -623,7 +630,7 @@ body.ranking-create-page .preview-panel::-webkit-scrollbar-track {
 body.ranking-create-page .settings-panel::-webkit-scrollbar-thumb,
 body.ranking-create-page .content-editor::-webkit-scrollbar-thumb,
 body.ranking-create-page .preview-panel::-webkit-scrollbar-thumb {
-    background: rgba(255, 107, 0, 0.3);
+    background: rgba(59, 130, 246, 0.3);
     border-radius: 3px;
 }
 
@@ -638,14 +645,14 @@ body.ranking-create-page .settings-panel,
 body.ranking-create-page .content-editor,
 body.ranking-create-page .preview-panel {
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 107, 0, 0.3) transparent;
+    scrollbar-color: rgba(59, 130, 246, 0.3) transparent;
 }
 
 /* 諛섏쓳???붿옄??*/
 @media (max-width: 1400px) {
     body.ranking-create-page .editor-container {
-        grid-template-columns: 280px 1fr 500px;
-        gap: 15px;
+        grid-template-columns: 250px minmax(0, 1fr) 500px;
+        gap: 16px;
     }
 }
 
@@ -815,7 +822,7 @@ body.ranking-create-page .preview-panel {
 /* ===== Upload Progress Bar ===== */
 .upload-progress-container {
     background: #1a1a1a;
-    border: 1px solid rgba(255, 107, 0, 0.3);
+    border: 1px solid rgba(59, 130, 246, 0.3);
     border-radius: 8px;
     padding: 15px;
     margin-bottom: 15px;
@@ -832,7 +839,7 @@ body.ranking-create-page .preview-panel {
 .upload-progress-fill {
     width: 0%;
     height: 100%;
-    background: linear-gradient(90deg, #ff6b00, #ff9500);
+    background: linear-gradient(90deg, #3b82f6, #1d4ed8);
     border-radius: 4px;
     transition: width 0.3s ease;
 }
@@ -1006,8 +1013,8 @@ body.ranking-create-page .preview-panel {
    Tutorial Banner Styles
    ============================================ */
 .tutorial-banner {
-    background: linear-gradient(135deg, rgba(255, 107, 0, 0.1), rgba(139, 92, 246, 0.1));
-    border: 1px solid rgba(255, 107, 0, 0.3);
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+    border: 1px solid rgba(59, 130, 246, 0.3);
     border-radius: 12px;
     padding: 12px 20px;
     margin-bottom: 20px;
@@ -1027,9 +1034,9 @@ body.ranking-create-page .preview-panel {
     justify-content: center;
     width: 32px;
     height: 32px;
-    background: rgba(255, 107, 0, 0.2);
+    background: rgba(59, 130, 246, 0.2);
     border-radius: 50%;
-    color: #ff6b00;
+    color: #3b82f6;
 }
 
 .tutorial-banner-text {
@@ -1041,18 +1048,18 @@ body.ranking-create-page .preview-panel {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    color: #ff6b00;
+    color: #3b82f6;
     text-decoration: none;
     font-size: 14px;
     font-weight: 500;
     padding: 6px 14px;
-    background: rgba(255, 107, 0, 0.1);
+    background: rgba(59, 130, 246, 0.1);
     border-radius: 20px;
     transition: all 0.3s ease;
 }
 
 .tutorial-banner-link:hover {
-    background: #ff6b00;
+    background: #3b82f6;
     color: #fff;
 }
 
@@ -1089,7 +1096,7 @@ body.ranking-create-page .preview-panel {
 }
 
 .download-link-btn:hover {
-    background: rgba(255, 107, 0, 0.1);
+    background: rgba(59, 130, 246, 0.1);
     border-color: var(--primary);
     color: var(--primary);
 }
@@ -1101,4 +1108,7 @@ body.ranking-create-page .preview-panel {
 .download-link-btn i {
     font-size: 16px;
 }
+
+
+
 

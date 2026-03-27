@@ -12,6 +12,17 @@ function goToLocalPage(fileName) {
   window.location.href = target;
 }
 
+async function readApiError(res) {
+  const text = await res.text().catch(() => "");
+  if (!text) return "";
+  try {
+    const data = JSON.parse(text);
+    return data.detail || data.error || "";
+  } catch {
+    return text.slice(0, 200);
+  }
+}
+
 function setText(id, text) {
   const el = document.getElementById(id);
   if (el) el.textContent = text;
@@ -29,6 +40,22 @@ function formatDate(dateStr) {
   });
 }
 
+function translatePlanName(planName, lang = "ko") {
+  const raw = String(planName || "").trim();
+  const map = {
+    "무료": { ko: "무료", en: "Free" },
+    "베이직": { ko: "베이직", en: "Basic" },
+    "프로": { ko: "프로", en: "Pro" },
+    "크리에이터": { ko: "크리에이터", en: "Creator" },
+    "Free": { ko: "무료", en: "Free" },
+    "Basic": { ko: "베이직", en: "Basic" },
+    "Pro": { ko: "프로", en: "Pro" },
+    "Creator": { ko: "크리에이터", en: "Creator" }
+  };
+  const normalized = map[raw] || map["무료"];
+  return normalized[lang === "en" ? "en" : "ko"];
+}
+
 async function loadUserData() {
   const res = await fetch("/api/user/info");
   if (res.status === 401) {
@@ -43,8 +70,10 @@ async function loadUserData() {
   setText("user-name-top", displayName);
   setText("credit-balance", (data.credits || 0).toLocaleString());
   setText("video-count", String(data.videoCount || 0));
-  setText("subscription-plan", data.subscriptionPlan || "무료");
-  setText("subscription-info", `${data.subscriptionPlan || "무료"} 플랜`);
+  const lang = typeof window.getSiteLang === "function" ? window.getSiteLang() : "ko";
+  const planText = translatePlanName(data.subscriptionPlan || "무료", lang);
+  setText("subscription-plan", planText);
+  setText("subscription-info", lang === "en" ? `${planText} plan` : `${planText} 플랜`);
 
   const adminLink = document.getElementById("nav-admin");
   if (adminLink) adminLink.style.display = data.isAdmin ? "" : "none";
@@ -186,4 +215,47 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const logoutBtn = document.getElementById("logout-btn");
   if (logoutBtn) logoutBtn.addEventListener("click", () => (window.location.href = "/logout"));
+
+  const deleteAccountBtn = document.getElementById("delete-account-btn");
+  if (deleteAccountBtn) {
+    deleteAccountBtn.addEventListener("click", async () => {
+      const ok = confirm("정말 회원 탈퇴하시겠습니까? 계정과 프로젝트가 모두 삭제되며 복구되지 않습니다.");
+      if (!ok) return;
+
+      deleteAccountBtn.disabled = true;
+      try {
+        const res = await fetch("/api/user/account", { method: "DELETE" });
+        let data = {};
+        try {
+          data = await res.clone().json();
+        } catch {
+          data = {};
+        }
+        if (!res.ok || !data.success) {
+          const fallback = await readApiError(res);
+          const detailText = data && (data.detail || data.error) ? (data.detail || data.error) : fallback;
+          const detail = detailText ? `\n${detailText}` : "";
+          alert(`회원 탈퇴에 실패했습니다.${detail}`);
+          deleteAccountBtn.disabled = false;
+          return;
+        }
+        alert("회원 탈퇴가 완료되었습니다.");
+        window.location.href = "/login.html";
+      } catch (error) {
+        console.error(error);
+        alert("회원 탈퇴 중 오류가 발생했습니다.");
+        deleteAccountBtn.disabled = false;
+      }
+    });
+  }
+
+  const sampleVideo = document.getElementById("ranking-sample-video");
+  if (sampleVideo && typeof sampleVideo.play === "function") {
+    const tryPlay = () => sampleVideo.play().catch(() => null);
+    sampleVideo.addEventListener("canplay", tryPlay, { once: true });
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) tryPlay();
+    });
+    tryPlay();
+  }
 });

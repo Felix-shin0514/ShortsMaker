@@ -147,8 +147,8 @@
             }
 
             .download-helper-btn:hover {
-                background: linear-gradient(135deg, #ff6b00, #ff8500);
-                border-color: #ff6b00;
+                background: linear-gradient(135deg, #3b82f6, #2563eb);
+                border-color: #3b82f6;
                 color: #fff;
                 transform: scale(1.1);
             }
@@ -274,7 +274,7 @@
             }
 
             .download-helper-item:hover .download-helper-item-arrow {
-                color: #ff6b00;
+                color: #3b82f6;
             }
 
             .download-helper-note {

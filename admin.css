@@ -93,9 +93,31 @@
 
 .credit-actions button:hover{background:rgba(255,255,255,.10)}
 
+.credit-actions button:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+  filter:saturate(.6);
+}
+
+.credit-actions button:disabled:hover{
+  background:rgba(255,255,255,.06);
+}
+
 .credit-actions button.is-danger{
   background:rgba(239,68,68,.12);
   border-color:rgba(239,68,68,.35);
 }
 .credit-actions button.is-danger:hover{background:rgba(239,68,68,.18)}
 
+.admin-delete-user-btn{
+  padding:8px 12px;
+  border-radius:10px;
+  border:1px solid rgba(239,68,68,.35);
+  background:rgba(239,68,68,.12);
+  color:#fecaca;
+  cursor:pointer;
+}
+
+.admin-delete-user-btn:hover{
+  background:rgba(239,68,68,.18);
+}

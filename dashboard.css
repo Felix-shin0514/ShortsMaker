@@ -37,17 +37,37 @@
     margin-bottom: 40px;
 }
 
+@media (max-width: 768px) {
+    .dashboard-stats {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .stat-value {
+        font-size: 38px;
+    }
+
+    .stat-label {
+        font-size: 15px;
+    }
+}
+
 .stat-card {
     background: #111;
-    border: 1px solid rgba(255, 107, 0, 0.3);
+    border: 1px solid rgba(59, 130, 246, 0.3);
     border-radius: 12px;
     padding: 25px;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
     transition: all 0.3s ease;
 }
 
 .stat-card:hover {
-    border-color: #ff6b00;
+    border-color: #3b82f6;
     transform: translateY(-2px);
 }
 
@@ -57,20 +77,24 @@
 }
 
 .stat-value {
-    font-size: 32px;
+    font-size: 42px;
     font-weight: bold;
-    color: #ff6b00;
-    margin-bottom: 5px;
+    color: #3b82f6;
+    margin-bottom: 0;
+    letter-spacing: -0.02em;
 }
 
 .stat-label {
     color: #aaa;
-    font-size: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 0;
+    line-height: 1.35;
 }
 
 .create-section {
-    background: linear-gradient(135deg, rgba(255, 107, 0, 0.1) 0%, rgba(255, 107, 0, 0.05) 100%);
-    border: 2px solid rgba(255, 107, 0, 0.3);
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+    border: 2px solid rgba(59, 130, 246, 0.3);
     border-radius: 16px;
     padding: 40px;
     text-align: center;
@@ -100,7 +124,7 @@
 
 .template-btn {
     background: #222;
-    border: 1px solid rgba(255, 107, 0, 0.3);
+    border: 1px solid rgba(59, 130, 246, 0.3);
     border-radius: 10px;
     padding: 20px;
     cursor: pointer;
@@ -113,7 +137,7 @@
 
 .template-btn:hover {
     background: #333;
-    border-color: #ff6b00;
+    border-color: #3b82f6;
     transform: translateY(-2px);
 }
 
@@ -145,7 +169,7 @@
 
 .template-card {
     background: #1a1a1a;
-    border: 1px solid rgba(255, 107, 0, 0.3);
+    border: 1px solid rgba(59, 130, 246, 0.3);
     border-radius: 12px;
     overflow: hidden;
     cursor: pointer;
@@ -153,9 +177,9 @@
 }
 
 .template-card:hover {
-    border-color: #ff6b00;
+    border-color: #3b82f6;
     transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(255, 107, 0, 0.2);
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.2);
 }
 
 .template-card:hover .template-overlay {
@@ -187,7 +211,7 @@
 .template-play-icon {
     width: 50px;
     height: 50px;
-    background: rgba(255, 107, 0, 0.9);
+    background: rgba(59, 130, 246, 0.9);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -241,7 +265,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: rgba(255, 107, 0, 0.9);
+    background: rgba(59, 130, 246, 0.9);
     color: #fff;
     padding: 8px 16px;
     border-radius: 20px;
@@ -315,7 +339,7 @@
 
 .video-card {
     background: #111;
-    border: 1px solid rgba(255, 107, 0, 0.3);
+    border: 1px solid rgba(59, 130, 246, 0.3);
     border-radius: 12px;
     overflow: hidden;
     transition: all 0.3s ease;
@@ -323,7 +347,7 @@
 }
 
 .video-card:hover {
-    border-color: #ff6b00;
+    border-color: #3b82f6;
     transform: translateY(-2px);
 }
 
@@ -374,12 +398,12 @@
 }
 
 .download-btn {
-    background: #ff6b00;
+    background: #3b82f6;
     color: #fff;
 }
 
 .download-btn:hover {
-    background: #ff8500;
+    background: #2563eb;
 }
 
 .delete-btn {
@@ -426,15 +450,15 @@
 
 .pv-box {
     background: #111;
-    border: 1px solid rgba(255, 107, 0, 0.3);
+    border: 1px solid rgba(59, 130, 246, 0.3);
     border-radius: 12px;
     overflow: hidden;
 }
 
 .pv-header {
-    background: linear-gradient(135deg, rgba(255, 107, 0, 0.1) 0%, rgba(255, 107, 0, 0.05) 100%);
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
     padding: 15px 20px;
-    border-bottom: 1px solid rgba(255, 107, 0, 0.2);
+    border-bottom: 1px solid rgba(59, 130, 246, 0.2);
 }
 
 .pv-header h3 {
@@ -468,7 +492,7 @@
 
 .project-item:hover,
 .video-item:hover {
-    background: rgba(255, 107, 0, 0.05);
+    background: rgba(59, 130, 246, 0.05);
 }
 
 .project-item:last-child,
@@ -544,12 +568,12 @@
 }
 
 .item-download-btn {
-    background: #ff6b00;
+    background: #3b82f6;
     color: #fff;
 }
 
 .item-download-btn:hover {
-    background: #ff8500;
+    background: #2563eb;
 }
 
 .item-delete-btn {
@@ -564,7 +588,7 @@
 /* Pagination for each box */
 .pv-pagination {
     padding: 15px 20px;
-    border-top: 1px solid rgba(255, 107, 0, 0.2);
+    border-top: 1px solid rgba(59, 130, 246, 0.2);
     display: flex;
     justify-content: center;
     gap: 8px;
@@ -589,12 +613,12 @@
 
 .pv-page-btn:hover {
     background: #333;
-    border-color: #ff6b00;
+    border-color: #3b82f6;
 }
 
 .pv-page-btn.active {
-    background: #ff6b00;
-    border-color: #ff6b00;
+    background: #3b82f6;
+    border-color: #3b82f6;
 }
 
 .pv-page-btn:disabled {
@@ -617,8 +641,8 @@
 
 .pagination-btn:hover:not(:disabled) {
     background: #333;
-    border-color: #ff6b00;
-    color: #ff6b00;
+    border-color: #3b82f6;
+    color: #3b82f6;
 }
 
 .pagination-btn:disabled {
@@ -659,12 +683,12 @@
 
 .page-btn:hover {
     background: #333;
-    border-color: #ff6b00;
+    border-color: #3b82f6;
 }
 
 .page-btn.active {
-    background: #ff6b00;
-    border-color: #ff6b00;
+    background: #3b82f6;
+    border-color: #3b82f6;
 }
 
 .page-btn:disabled {
@@ -803,9 +827,9 @@
     }
 
     .stat-card {
-        border-radius: 8.04px;
-        padding: 16.75px;
-        min-height: 80px;
+        border-radius: 12px;
+        padding: 25px;
+        min-height: 120px;
     }
 
     .stat-icon {
@@ -814,14 +838,18 @@
     }
 
     .stat-value {
-        font-size: 21.44px;
-        margin-bottom: 3.35px;
-        min-height: 25px;
-        line-height: 25px;
+        font-size: 42px;
+        margin-bottom: 0;
+        min-height: 38px;
+        line-height: 38px;
+        letter-spacing: -0.02em;
     }
 
     .stat-label {
-        font-size: 9.38px;
+        font-size: 16px;
+        font-weight: 600;
+        margin-top: 0;
+        line-height: 1.35;
     }
 
     /* Create Section */
@@ -1077,7 +1105,7 @@
 
 .video-card-dashboard:hover {
     transform: translateY(-6px) scale(1.02);
-    box-shadow: 0 16px 32px rgba(255, 107, 0, 0.2), 0 0 0 1px rgba(255, 107, 0, 0.3);
+    box-shadow: 0 16px 32px rgba(59, 130, 246, 0.2), 0 0 0 1px rgba(59, 130, 246, 0.3);
 }
 
 .video-card-dashboard video {
@@ -1240,7 +1268,7 @@ body.dashboard-page {
     position: sticky;
     top: 0;
     z-index: 300;
-    border-bottom: 1px solid rgba(255, 107, 0, 0.5);
+    border-bottom: 1px solid rgba(59, 130, 246, 0.5);
     background: linear-gradient(90deg, #2a1000 0%, #1a0d07 50%, #140d0b 100%);
 }
 
@@ -1262,7 +1290,7 @@ body.dashboard-page {
 }
 
 .dash-logo-shorts {
-    color: #ff6b00;
+    color: #3b82f6;
 }
 
 .dash-logo-craft {
@@ -1300,7 +1328,7 @@ body.dashboard-page {
 .dash-logout-btn {
     border: none;
     border-radius: 999px;
-    background: #ff7a00;
+    background: #3b82f6;
     color: #fff;
     font-weight: 700;
     padding: 8px 14px;
@@ -1352,7 +1380,7 @@ body.dashboard-page {
 
 .stat-card {
     background: #0e0e11;
-    border: 1px solid rgba(255, 107, 0, 0.5);
+    border: 1px solid rgba(59, 130, 246, 0.5);
     border-radius: 12px;
     min-height: 106px;
 }
@@ -1363,7 +1391,7 @@ body.dashboard-page {
 
 .create-section {
     background: radial-gradient(circle at top, rgba(90, 32, 0, 0.35), rgba(33, 15, 6, 0.92));
-    border: 1px solid rgba(255, 107, 0, 0.45);
+    border: 1px solid rgba(59, 130, 246, 0.45);
     border-radius: 16px;
     text-align: left;
     margin-bottom: 28px;
@@ -1385,7 +1413,7 @@ body.dashboard-page {
     position: relative;
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 16px;
-    min-height: 250px;
+    min-height: 520px;
     background: linear-gradient(160deg, #212129 0%, #111118 100%);
     color: #fff;
     text-align: left;
@@ -1394,7 +1422,54 @@ body.dashboard-page {
     align-items: flex-end;
     font-weight: 700;
     cursor: pointer;
+    overflow: hidden;
     transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.template-card-v2::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.70) 100%);
+}
+
+.template-preview-phone {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: min(340px, 86%);
+    aspect-ratio: 9 / 16;
+    border-radius: 24px;
+    background: #000;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    box-shadow: 0 18px 60px rgba(0, 0, 0, 0.55);
+    overflow: hidden;
+    z-index: 0;
+}
+
+.template-preview-phone::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(800px 500px at 30% 15%, rgba(255, 255, 255, 0.08), transparent 55%);
+    pointer-events: none;
+}
+
+.template-preview-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    opacity: 0.98;
+    pointer-events: none;
+}
+
+.template-card-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
 }
 
 .template-card-v2:nth-child(2) {
@@ -1411,8 +1486,8 @@ body.dashboard-page {
 
 .template-card-v2:hover {
     transform: translateY(-2px);
-    border-color: #ff6b00;
-    box-shadow: 0 10px 30px rgba(255, 107, 0, 0.22);
+    border-color: #3b82f6;
+    box-shadow: 0 10px 30px rgba(59, 130, 246, 0.22);
 }
 
 .card-title {
@@ -1424,6 +1499,7 @@ body.dashboard-page {
     position: absolute;
     top: 10px;
     left: 10px;
+    z-index: 3;
     border-radius: 999px;
     font-size: 12px;
     padding: 4px 9px;
@@ -1431,7 +1507,7 @@ body.dashboard-page {
     letter-spacing: 0.3px;
 }
 
-.tag.best { background: #ff8a00; }
+.tag.best { background: #2563eb; }
 .tag.new { background: #2fd67f; }
 .tag.hot { background: #ff3565; }
 .tag.ai { background: #6f7cff; }
@@ -1442,13 +1518,13 @@ body.dashboard-page {
 
 .pv-box {
     background: #0e0f12;
-    border: 1px solid rgba(255, 107, 0, 0.45);
+    border: 1px solid rgba(59, 130, 246, 0.45);
     border-radius: 14px;
 }
 
 .pv-header {
     background: linear-gradient(90deg, rgba(89, 38, 6, 0.6), rgba(36, 18, 8, 0.55));
-    border-bottom: 1px solid rgba(255, 107, 0, 0.35);
+    border-bottom: 1px solid rgba(59, 130, 246, 0.35);
 }
 
 .pv-header h3 {
@@ -1469,13 +1545,13 @@ body.dashboard-page {
     max-width: 980px;
     margin: 40px auto 24px;
     padding: 24px 20px;
-    border-top: 1px solid rgba(255, 107, 0, 0.3);
+    border-top: 1px solid rgba(59, 130, 246, 0.3);
     text-align: center;
     color: #9aa0a6;
 }
 
 .dash-footer h4 {
-    color: #ff6b00;
+    color: #3b82f6;
     margin: 0 0 10px;
     font-size: 30px;
 }
@@ -1485,9 +1561,62 @@ body.dashboard-page {
     font-size: 14px;
 }
 
+.dash-footer a{
+    color: #e5e7eb;
+    text-decoration: none;
+}
+
+.dash-footer a:hover{
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
 .dash-footer small {
     font-size: 12px;
     opacity: 0.8;
+}
+
+.account-danger-section {
+    margin-top: 24px;
+}
+
+.account-danger-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    background: #0e0f12;
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    border-radius: 14px;
+    padding: 24px;
+}
+
+.account-danger-card h2 {
+    margin: 0 0 8px;
+    font-size: 22px;
+    color: #fff;
+}
+
+.account-danger-card p {
+    margin: 0;
+    color: #c4c4c4;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.danger-btn {
+    border: 1px solid rgba(239, 68, 68, 0.55);
+    background: rgba(239, 68, 68, 0.12);
+    color: #fecaca;
+    border-radius: 10px;
+    padding: 12px 18px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.danger-btn:hover {
+    background: rgba(239, 68, 68, 0.18);
 }
 
 @media (max-width: 1100px) {
@@ -1505,6 +1634,11 @@ body.dashboard-page {
     .dash-nav-right {
         width: 100%;
         justify-content: center;
+    }
+
+    .account-danger-card {
+        flex-direction: column;
+        align-items: flex-start;
     }
 
     .template-grid-v2 {
@@ -1531,8 +1665,13 @@ body.dashboard-page {
     }
 
     .template-card-v2 {
-        min-height: 180px;
+        min-height: 420px;
         border-radius: 12px;
+    }
+
+    .template-preview-phone {
+        width: min(300px, 92%);
+        border-radius: 20px;
     }
 
     .pv-container {

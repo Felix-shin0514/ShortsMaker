@@ -27,9 +27,116 @@ const OAUTH_NEXT_COOKIE = "sm_oauth_next";
 
 const SESSION_TTL_SECONDS = 60 * 60 * 24 * 14; // 14 days
 const OAUTH_TTL_SECONDS = 60 * 10; // 10 minutes
+const BILLING_PERIOD_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
+const SIGNUP_BONUS_CREDITS = 200;
 
-const PUBLIC_HTML = new Set(["/login.html"]);
+const PUBLIC_HTML = new Set([
+  "/login.html",
+  "/pricing.html",
+  "/terms.html",
+  "/privacy.html",
+  "/refund.html",
+  "/marketing.html"
+]);
 const MASTER_EMAIL = (process.env.MASTER_EMAIL || "shindong0514@gmail.com").trim().toLowerCase();
+
+const PLANS = {
+  free: { key: "free", name: "무료", priceWon: 0, monthlyCredits: 0, priority: 0 },
+  basic: { key: "basic", name: "베이직", priceWon: 9900, monthlyCredits: 1000, priority: 1 },
+  pro: { key: "pro", name: "프로", priceWon: 16900, monthlyCredits: 2000, priority: 2 },
+  creator: { key: "creator", name: "크리에이터", priceWon: 29900, monthlyCredits: 4000, priority: 3 }
+};
+
+function getPlan(key) {
+  const k = String(key || "").trim().toLowerCase();
+  return PLANS[k] || PLANS.free;
+}
+
+function getUserPlanKey(user) {
+  const key = user && user.subscriptionPlanKey ? String(user.subscriptionPlanKey) : "free";
+  return getPlan(key).key;
+}
+
+function getUserPriority(user) {
+  const planKey = getUserPlanKey(user);
+  return getPlan(planKey).priority || 0;
+}
+
+async function maybeGrantMonthlyCredits(user) {
+  if (!user) return null;
+  const planKey = getUserPlanKey(user);
+  if (planKey === "free") return user;
+
+  const plan = getPlan(planKey);
+  const renewAtMs = Number(user.subscriptionRenewAtMs || 0);
+  const monthly = Number(user.subscriptionMonthlyCredits || plan.monthlyCredits || 0);
+  if (!renewAtMs || !monthly) return user;
+
+  const now = Date.now();
+  if (now < renewAtMs) return user;
+
+  const periods = Math.floor((now - renewAtMs) / BILLING_PERIOD_MS) + 1;
+  const delta = periods * monthly;
+  await store.updateUserCredits(user.id, { delta });
+
+  const nextRenewAtMs = renewAtMs + periods * BILLING_PERIOD_MS;
+  if (store.updateUser) {
+    await store.updateUser(user.id, { subscriptionRenewAtMs: nextRenewAtMs, subscriptionLastGrantAtMs: now });
+  }
+
+  return store.getUser ? await store.getUser(user.id) : user;
+}
+
+async function applyMockSubscriptionPayment({ userId, planKey }) {
+  const plan = getPlan(planKey);
+  if (!plan || plan.key === "free") {
+    const err = new Error("Invalid plan");
+    err.statusCode = 400;
+    throw err;
+  }
+
+  const user = await store.getUser(userId);
+  if (!user) {
+    const err = new Error("User not found");
+    err.statusCode = 404;
+    throw err;
+  }
+
+  const now = Date.now();
+  const renewAtMs = Number(user.subscriptionRenewAtMs || 0);
+  const currentPlanKey = getUserPlanKey(user);
+
+  // Prevent repeated grants while the current billing period is still active.
+  if (
+    renewAtMs &&
+    now < renewAtMs &&
+    user.subscriptionStatus === "active" &&
+    user.subscriptionProvider === "toss_mock" &&
+    currentPlanKey === plan.key
+  ) {
+    const err = new Error("Already subscribed");
+    err.statusCode = 409;
+    throw err;
+  }
+
+  const paymentId = "mock_" + crypto.randomUUID();
+
+  await store.updateUser(userId, {
+    subscriptionPlanKey: plan.key,
+    subscriptionMonthlyCredits: plan.monthlyCredits || 0,
+    subscriptionStatus: "active",
+    subscriptionProvider: "toss_mock",
+    subscriptionRenewAtMs: now + BILLING_PERIOD_MS,
+    subscriptionLastGrantAtMs: now,
+    subscriptionLastPaymentId: paymentId
+  });
+
+  if (plan.monthlyCredits) {
+    await store.updateUserCredits(userId, { delta: plan.monthlyCredits });
+  }
+
+  return store.getUser ? await store.getUser(userId) : null;
+}
 
 const MIME_TYPES = {
   ".html": "text/html; charset=utf-8",
@@ -94,6 +201,73 @@ async function serveStatic(req, res) {
     setCorsHeaders(res);
     res.writeHead(200, { "Content-Type": mimeType });
     fs.createReadStream(absPath).pipe(res);
+  } catch {
+    sendJson(res, 404, { error: "Not found" });
+  }
+}
+
+async function serveNewestMp4FromDir(req, res, dirAbsPath) {
+  try {
+    const entries = await fsp.readdir(dirAbsPath, { withFileTypes: true });
+    const mp4s = entries
+      .filter((e) => e.isFile() && e.name.toLowerCase().endsWith(".mp4"))
+      .map((e) => path.join(dirAbsPath, e.name));
+
+    if (!mp4s.length) {
+      sendJson(res, 404, { error: "No sample video found" });
+      return;
+    }
+
+    let best = mp4s[0];
+    let bestMtime = 0;
+    for (const p of mp4s) {
+      try {
+        const st = await fsp.stat(p);
+        const mt = st.mtimeMs || 0;
+        if (mt >= bestMtime) {
+          bestMtime = mt;
+          best = p;
+        }
+      } catch {
+        // ignore
+      }
+    }
+
+    const stat = await fsp.stat(best);
+    const size = stat.size || 0;
+    const range = String(req.headers.range || "").trim();
+
+    setCorsHeaders(res);
+    res.setHeader("Content-Type", "video/mp4");
+    res.setHeader("Accept-Ranges", "bytes");
+    res.setHeader("Cache-Control", "no-store");
+
+    if (range && range.startsWith("bytes=")) {
+      const m = /^bytes=(\d*)-(\d*)$/.exec(range);
+      if (!m) {
+        res.writeHead(416);
+        res.end();
+        return;
+      }
+
+      const start = m[1] ? Number(m[1]) : 0;
+      const end = m[2] ? Number(m[2]) : Math.max(0, size - 1);
+      if (!Number.isFinite(start) || !Number.isFinite(end) || start > end || start >= size) {
+        res.writeHead(416);
+        res.end();
+        return;
+      }
+
+      res.writeHead(206, {
+        "Content-Range": `bytes ${start}-${end}/${size}`,
+        "Content-Length": String(end - start + 1)
+      });
+      fs.createReadStream(best, { start, end }).pipe(res);
+      return;
+    }
+
+    res.writeHead(200, { "Content-Length": String(size) });
+    fs.createReadStream(best).pipe(res);
   } catch {
     sendJson(res, 404, { error: "Not found" });
   }
@@ -170,7 +344,8 @@ function getFirebaseWebConfig() {
   const projectId = process.env.FIREBASE_PROJECT_ID || "";
   const appId = process.env.FIREBASE_APP_ID || "";
   const measurementId = process.env.FIREBASE_MEASUREMENT_ID || "";
-  return { apiKey, authDomain, projectId, appId, measurementId };
+  const storageBucket = process.env.FIREBASE_STORAGE_BUCKET || "";
+  return { apiKey, authDomain, projectId, appId, measurementId, storageBucket };
 }
 
 let firebaseAdmin = null;
@@ -216,10 +391,96 @@ async function createSessionForUser(req, userId) {
   return store.createSession({ userId, expiresAtMs });
 }
 
-function runFfmpeg(inputPath, outputPath) {
+function normalizeUpsertResult(result) {
+  if (!result) return { userId: "", isNewUser: false };
+  if (typeof result === "string") return { userId: result, isNewUser: false };
+  return {
+    userId: String(result.userId || "").trim(),
+    isNewUser: Boolean(result.isNewUser)
+  };
+}
+
+async function maybeGrantSignupBonus(userId, isNewUser) {
+  if (!userId || !isNewUser) return;
+  await store.updateUserCredits(userId, { delta: SIGNUP_BONUS_CREDITS });
+}
+
+async function destroyCurrentSession(res, sessionId) {
+  if (sessionId) {
+    try {
+      await store.deleteSession(sessionId);
+    } catch {
+      // ignore
+    }
+  }
+  clearCookie(res, SESSION_COOKIE, { path: "/" });
+}
+
+async function deleteFirebaseAuthAccountsForUser(userId) {
+  if (!userId || !store.listUserIdentities) return;
+
+  let identities = [];
+  try {
+    identities = await store.listUserIdentities(userId);
+  } catch (error) {
+    console.error("Failed to load user identities for auth deletion:", error);
+    return;
+  }
+
+  const firebaseProviderIds = identities
+    .filter((identity) => String(identity.provider || "").toLowerCase() === "firebase")
+    .map((identity) => String(identity.providerUserId || "").trim())
+    .filter(Boolean);
+
+  if (!firebaseProviderIds.length) return;
+
+  let auth = null;
+  try {
+    auth = ensureFirebaseAdmin();
+  } catch (error) {
+    console.error("Firebase Admin unavailable during auth account deletion:", error);
+    return;
+  }
+
+  for (const providerUserId of firebaseProviderIds) {
+    try {
+      await auth.deleteUser(providerUserId);
+    } catch (error) {
+      const code = error && error.code ? String(error.code) : "";
+      if (code === "auth/user-not-found") continue;
+      console.error(`Failed to delete Firebase Auth user ${providerUserId}:`, error);
+    }
+  }
+}
+
+function getQualityProfile(key) {
+  const k = String(key || "").trim().toLowerCase();
+  if (k === "standard") return { key: "standard", fps: 30, width: 720, height: 1280, crf: 24, level: "4.0", audioBitrate: "160k" };
+  return { key: "premium", fps: 60, width: 1080, height: 1920, crf: 20, level: "4.2", audioBitrate: "192k" };
+}
+
+function calcCreditsForSeconds(qualityKey, seconds) {
+  const s = Math.max(0, Number(seconds || 0));
+  const mins = Math.max(1, Math.ceil(s / 60));
+  const k = String(qualityKey || "").trim().toLowerCase();
+  const perMin = k === "standard" ? 100 : 200;
+  return mins * perMin;
+}
+
+function runFfmpeg(inputPath, outputPath, { fps = 24, width = null, height = null, crf = 19, level = "4.2", audioBitrate = "192k" } = {}, seconds = 0) {
   return new Promise((resolve, reject) => {
+    const safeSeconds = Math.max(0, Math.min(60 * 60 * 6, Number(seconds || 0)));
+    const vfParts = [];
+    if (width && height) vfParts.push(`scale=${width}:${height}:flags=lanczos`);
+    // Normalize variable frame-rate / broken timestamps from browser-recorded webm
+    // to avoid long frozen segments and incorrect durations in the exported mp4.
+    vfParts.push(`fps=${fps}`);
+    const vf = vfParts.length ? vfParts.join(",") : null;
+
     const ffmpeg = spawn(FFMPEG_PATH, [
       "-y",
+      "-fflags",
+      "+genpts",
       "-i",
       inputPath,
       "-c:v",
@@ -227,19 +488,24 @@ function runFfmpeg(inputPath, outputPath) {
       "-preset",
       "medium",
       "-crf",
-      "19",
+      String(crf),
       "-pix_fmt",
       "yuv420p",
-      "-r",
-      "24",
+      ...(vf ? ["-vf", vf] : []),
+      "-vsync",
+      "cfr",
       "-profile:v",
       "high",
       "-level",
-      "4.2",
+      String(level),
       "-c:a",
       "aac",
+      "-af",
+      "aresample=async=1:first_pts=0",
       "-b:a",
-      "192k",
+      String(audioBitrate),
+      ...(safeSeconds ? ["-t", String(safeSeconds)] : []),
+      "-shortest",
       "-movflags",
       "+faststart",
       outputPath
@@ -263,6 +529,22 @@ function runFfmpeg(inputPath, outputPath) {
 }
 
 async function handleTranscode(req, res) {
+  const url = new URL(req.url || "", getRequestOrigin(req));
+  const qualityKey = url.searchParams.get("quality") || "premium";
+  const secondsParam = url.searchParams.get("seconds") || "0";
+  const seconds = Math.max(0, Math.min(60 * 60 * 6, parseInt(secondsParam, 10) || 0));
+  const profile = getQualityProfile(qualityKey);
+  const cost = calcCreditsForSeconds(profile.key, seconds);
+
+  const ctx = await requireAuth(req, res);
+  if (!ctx) return;
+
+  const haveCredits = Number(ctx.user?.credits || 0);
+  if (!Number.isFinite(haveCredits) || haveCredits < cost) {
+    sendApiJson(res, 402, { error: "insufficient_credits", needed: cost, have: haveCredits });
+    return;
+  }
+
   const body = await readRequestBody(req);
   if (!body.length) {
     sendApiJson(res, 400, { error: "Empty request body" });
@@ -275,15 +557,21 @@ async function handleTranscode(req, res) {
 
   try {
     await fsp.writeFile(inputPath, body);
-    await runFfmpeg(inputPath, outputPath);
+    await runFfmpeg(inputPath, outputPath, profile, seconds);
     const fileBuffer = await fsp.readFile(outputPath);
-    const fileName = `shortsmaker-export-${Date.now()}.mp4`;
+
+    // Deduct credits only after a successful transcode.
+    const updated = await store.updateUserCredits(ctx.user.id, { delta: -cost });
+    const remainingCredits = updated ? Number(updated.credits || 0) : Math.max(0, haveCredits - cost);
+
+    const fileName = `shortsmaker-export-${profile.key}-${Date.now()}.mp4`;
 
     setCorsHeaders(res);
     res.writeHead(200, {
       "Content-Type": "video/mp4",
       "Content-Disposition": `attachment; filename="${fileName}"; filename*=UTF-8''${fileName}`,
       "X-Download-Filename": fileName,
+      "X-Remaining-Credits": String(remainingCredits),
       "Content-Length": fileBuffer.length
     });
     res.end(fileBuffer);
@@ -309,6 +597,12 @@ const server = http.createServer(async (req, res) => {
 
   const origin = getRequestOrigin(req);
   const url = new URL(req.url, origin);
+
+  if (req.method === "GET" && url.pathname === "/assets/videos/ranking.mp4") {
+    const dirAbs = path.join(ROOT, "assets", "videos");
+    await serveNewestMp4FromDir(req, res, dirAbs);
+    return;
+  }
 
   if (req.method === "GET" && url.pathname === "/") {
     const ctx = await getAuthContext(req);
@@ -368,14 +662,17 @@ const server = http.createServer(async (req, res) => {
         return;
       }
 
-      const userId = store.upsertFirebaseUser
+      const upsertResult = store.upsertFirebaseUser
         ? await store.upsertFirebaseUser({ providerUserId: uid, email, displayName, pictureUrl })
         : await store.upsertOAuthUser({ provider: "firebase", providerUserId: uid, email, displayName, pictureUrl });
+      const { userId, isNewUser } = normalizeUpsertResult(upsertResult);
 
       if (!userId) {
         sendApiJson(res, 500, { error: "Failed to create user" });
         return;
       }
+
+      await maybeGrantSignupBonus(userId, isNewUser);
 
       const user = await store.getUser(userId);
       if (user) await ensurePersonalWorkspace(user);
@@ -491,7 +788,9 @@ const server = http.createServer(async (req, res) => {
 
       if (!providerUserId) throw new Error("Missing user sub");
 
-      const userId = await store.upsertGoogleUser({ providerUserId, email, displayName, pictureUrl });
+      const upsertResult = await store.upsertGoogleUser({ providerUserId, email, displayName, pictureUrl });
+      const { userId, isNewUser } = normalizeUpsertResult(upsertResult);
+      await maybeGrantSignupBonus(userId, isNewUser);
       const user = await store.getUser(userId);
       if (user) await ensurePersonalWorkspace(user);
 
@@ -531,15 +830,142 @@ const server = http.createServer(async (req, res) => {
       sendApiJson(res, 401, { error: "Unauthorized" });
       return;
     }
+    const user = await maybeGrantMonthlyCredits(ctx.user);
+    const plan = getPlan(getUserPlanKey(user));
     sendApiJson(res, 200, {
-      displayName: ctx.user.displayName || "User",
-      email: ctx.user.email || "",
-      credits: ctx.user.credits || 0,
+      displayName: user.displayName || "User",
+      email: user.email || "",
+      credits: user.credits || 0,
       videoCount: 0,
-      subscriptionPlan: "무료",
-      subscriptionStatus: "free",
-      isAdmin: isAdminUser(ctx.user)
+      subscriptionPlan: plan.name,
+      subscriptionStatus: plan.key,
+      subscriptionMonthlyCredits: plan.monthlyCredits || 0,
+      subscriptionPriority: plan.priority || 0,
+      isAdmin: isAdminUser(user)
     });
+    return;
+  }
+
+  if (req.method === "DELETE" && url.pathname === "/api/user/account") {
+    const ctx = await requireAuth(req, res);
+    if (!ctx) return;
+    try {
+      if (!store.deleteUser) {
+        sendApiJson(res, 500, { error: "account_delete_unsupported", detail: "Store does not support account deletion." });
+        return;
+      }
+
+      const authDeleteTask = deleteFirebaseAuthAccountsForUser(ctx.user.id);
+      const deleted = await store.deleteUser(ctx.user.id);
+      if (!deleted) {
+        sendApiJson(res, 404, { error: "not_found", detail: "User not found." });
+        return;
+      }
+
+      await authDeleteTask;
+      await destroyCurrentSession(res, ctx.sessionId);
+      sendApiJson(res, 200, { success: true });
+    } catch (error) {
+      console.error("Failed to delete own account:", error);
+      sendApiJson(res, 500, { error: "account_delete_failed", detail: error && error.message ? error.message : "" });
+    }
+    return;
+  }
+
+  if (req.method === "GET" && url.pathname === "/api/support/inquiries") {
+    const ctx = await requireAuth(req, res);
+    if (!ctx) return;
+    const wantsAll = url.searchParams.get("all") === "1";
+    const isAdmin = isAdminUser(ctx.user);
+    const inquiries = await store.listInquiries({
+      userId: ctx.user.id,
+      isAdmin: wantsAll && isAdmin,
+      limit: 200
+    });
+    sendApiJson(res, 200, { inquiries, isAdmin });
+    return;
+  }
+
+  if (req.method === "POST" && url.pathname === "/api/support/inquiries") {
+    const ctx = await requireAuth(req, res);
+    if (!ctx) return;
+
+    let body = null;
+    try {
+      body = parseJsonBody(await readRequestBody(req)) || {};
+    } catch {
+      sendApiJson(res, 400, { error: "Invalid JSON" });
+      return;
+    }
+
+    const subject = String(body.subject || "").trim();
+    const message = String(body.message || "").trim();
+
+    if (subject.length < 2 || subject.length > 120) {
+      sendApiJson(res, 400, { error: "subject must be 2~120 chars" });
+      return;
+    }
+    if (message.length < 5 || message.length > 5000) {
+      sendApiJson(res, 400, { error: "message must be 5~5000 chars" });
+      return;
+    }
+
+    const inquiry = await store.createInquiry({
+      userId: ctx.user.id,
+      email: ctx.user.email || "",
+      displayName: ctx.user.displayName || "User",
+      subject,
+      message
+    });
+
+    sendApiJson(res, 200, { success: true, inquiry });
+    return;
+  }
+
+  if (req.method === "PATCH" && /^\/api\/support\/inquiries\/[^/]+$/.test(url.pathname)) {
+    const ctx = await requireAuth(req, res);
+    if (!ctx) return;
+    if (!isAdminUser(ctx.user)) {
+      sendApiJson(res, 403, { error: "Forbidden" });
+      return;
+    }
+
+    let body = null;
+    try {
+      body = parseJsonBody(await readRequestBody(req)) || {};
+    } catch {
+      sendApiJson(res, 400, { error: "Invalid JSON" });
+      return;
+    }
+
+    const inquiryId = url.pathname.split("/").pop();
+    const patch = {};
+
+    if (Object.prototype.hasOwnProperty.call(body, "status")) {
+      const status = String(body.status || "").trim().toLowerCase();
+      if (!["open", "answered", "closed"].includes(status)) {
+        sendApiJson(res, 400, { error: "invalid status" });
+        return;
+      }
+      patch.status = status;
+    }
+
+    if (Object.prototype.hasOwnProperty.call(body, "adminMemo")) {
+      const adminMemo = String(body.adminMemo || "").trim();
+      if (adminMemo.length > 2000) {
+        sendApiJson(res, 400, { error: "adminMemo too long" });
+        return;
+      }
+      patch.adminMemo = adminMemo;
+    }
+
+    const updated = await store.updateInquiry(inquiryId, patch);
+    if (!updated) {
+      sendApiJson(res, 404, { error: "Not found" });
+      return;
+    }
+
+    sendApiJson(res, 200, { success: true, inquiry: updated });
     return;
   }
 
@@ -567,7 +993,8 @@ const server = http.createServer(async (req, res) => {
     }
 
     const parts = url.pathname.split("/").filter(Boolean);
-    const userId = parts[2] || "";
+    // /api/admin/users/:id/credits -> ["api","admin","users",":id","credits"]
+    const userId = parts[3] || "";
 
     let body = null;
     try {
@@ -607,6 +1034,43 @@ const server = http.createServer(async (req, res) => {
     }
 
     sendApiJson(res, 200, { success: true, user: updated });
+    return;
+  }
+
+  if (req.method === "DELETE" && /^\/api\/admin\/users\/[^/]+$/.test(url.pathname)) {
+    const ctx = await requireAuth(req, res);
+    if (!ctx) return;
+    if (!isAdminUser(ctx.user)) {
+      sendApiJson(res, 403, { error: "Forbidden" });
+      return;
+    }
+
+    const parts = url.pathname.split("/").filter(Boolean);
+    const userId = parts[3] || "";
+    if (!userId) {
+      sendApiJson(res, 400, { error: "Missing userId" });
+      return;
+    }
+
+    try {
+      if (!store.deleteUser) {
+        sendApiJson(res, 500, { error: "account_delete_unsupported", detail: "Store does not support account deletion." });
+        return;
+      }
+
+      const authDeleteTask = deleteFirebaseAuthAccountsForUser(userId);
+      const deleted = await store.deleteUser(userId);
+      if (!deleted) {
+        sendApiJson(res, 404, { error: "not_found", detail: "User not found." });
+        return;
+      }
+
+      await authDeleteTask;
+      sendApiJson(res, 200, { success: true });
+    } catch (error) {
+      console.error("Failed to delete admin target account:", error);
+      sendApiJson(res, 500, { error: "account_delete_failed", detail: error && error.message ? error.message : "" });
+    }
     return;
   }
 
@@ -735,8 +1199,46 @@ const server = http.createServer(async (req, res) => {
       sendApiJson(res, 401, { error: "Unauthorized" });
       return;
     }
-    sendApiJson(res, 200, { status: "free", plan: "무료" });
+    const user = await maybeGrantMonthlyCredits(ctx.user);
+    const plan = getPlan(getUserPlanKey(user));
+    sendApiJson(res, 200, { status: plan.key, plan: plan.name });
     return;
+  }
+
+  if (req.method === "POST" && url.pathname === "/api/billing/mock/success") {
+    const ctx = await requireAuth(req, res);
+    if (!ctx) return;
+    if (!isAdminUser(ctx.user)) {
+      sendApiJson(res, 403, { error: "Forbidden" });
+      return;
+    }
+
+    let body = null;
+    try {
+      body = await parseJsonBody(req);
+    } catch {
+      sendApiJson(res, 400, { error: "Invalid JSON" });
+      return;
+    }
+
+    const planKey = body && body.planKey ? String(body.planKey) : "";
+
+    try {
+      const updated = await applyMockSubscriptionPayment({ userId: ctx.user.id, planKey });
+      const plan = getPlan(getUserPlanKey(updated));
+      sendApiJson(res, 200, {
+        ok: true,
+        subscriptionPlan: plan.name,
+        subscriptionStatus: plan.key,
+        credits: updated ? updated.credits || 0 : 0,
+        renewAtMs: updated ? updated.subscriptionRenewAtMs || null : null
+      });
+      return;
+    } catch (e) {
+      const statusCode = e && e.statusCode ? e.statusCode : 500;
+      sendApiJson(res, statusCode, { error: e && e.message ? e.message : "Internal error" });
+      return;
+    }
   }
 
   if (req.method === "GET" && url.pathname === "/api/user/promotions") {

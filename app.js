@@ -64,6 +64,199 @@ const backgroundColorEl = document.getElementById("background-color");
 
 let currentVideoObjectUrl = null;
 let isGeneratingVideo = false;
+let lastKnownCredits = null;
+
+const QUALITY_PROFILES = {
+  standard: { key: "standard", label: "Standard", fps: 30, width: 720, height: 1280, vBps: 4_500_000, aBps: 160_000, creditsPerMinute: 100, crf: 24, level: "4.0" },
+  premium: { key: "premium", label: "Premium", fps: 60, width: 1080, height: 1920, vBps: 8_500_000, aBps: 192_000, creditsPerMinute: 200, crf: 20, level: "4.2" }
+};
+
+// Keep client-side rendering at a stable baseline size for performance.
+// Final output resolution is handled by the server transcode step.
+const BASE_RENDER_WIDTH = 1080;
+const BASE_RENDER_HEIGHT = 1920;
+
+function getSiteLang() {
+  return typeof window.getSiteLang === "function" ? window.getSiteLang() : "ko";
+}
+
+function t(ko, en) {
+  return getSiteLang() === "en" ? en : ko;
+}
+
+function setNodeText(selector, text) {
+  const element = document.querySelector(selector);
+  if (element) {
+    element.textContent = text;
+  }
+}
+
+function translateSelectOptions(selectEl, labels) {
+  if (!selectEl) return;
+  Array.from(selectEl.options).forEach((option, index) => {
+    if (labels[index]) option.textContent = labels[index];
+  });
+}
+
+function translateEmulatorUI() {
+  if (!document.body || document.body.dataset.page !== "emulator") return;
+
+  document.title = t("랭킹 에뮬레이터 - ShortsMaker", "Ranking Emulator - ShortsMaker");
+
+  setNodeText("#project-settings-title", t("프로젝트 설정", "Project settings"));
+  setNodeText("#ranking-video-label", t("랭킹 영상", "Ranking video"));
+  setNodeText("#title-settings-title", t("타이틀 설정", "Title settings"));
+  setNodeText("#title-line-1-label", t("첫 번째 줄", "First line"));
+  setNodeText("#title-line-2-label", t("두 번째 줄", "Second line"));
+  setNodeText("#title-x-offset-label", t("제목 X 위치", "Title X position"));
+  setNodeText("#title-y-offset-label", t("제목 Y 위치", "Title Y position"));
+  setNodeText("#title-line1-font-size-label", t("첫 번째 줄 크기", "First line size"));
+  setNodeText("#title-line2-font-size-label", t("두 번째 줄 크기", "Second line size"));
+  setNodeText("#title-font-weight-label", t("제목 굵기", "Title weight"));
+  setNodeText("#title-line1-color-label", t("첫 번째 줄 색상", "First line color"));
+  setNodeText("#title-line2-color-label", t("두 번째 줄 색상", "Second line color"));
+  setNodeText("#layout-controls-title", t("레이아웃 위치 조절", "Layout controls"));
+  setNodeText("#ranking-list-settings-title", t("랭킹 목록 설정", "Ranking list settings"));
+  setNodeText("#background-music-title", t("배경음악 (전체 영상)", "Background music"));
+  setNodeText("#transition-black-title", t("전환 검은 화면", "Black transition screen"));
+  setNodeText("#background-color-title", t("배경 색상", "Background color"));
+  setNodeText("#caption-settings-title", t("자막 설정 (전체 영상)", "Caption settings"));
+
+  const layoutTopPaddingLabel = document.getElementById("layout-top-padding-label");
+  if (layoutTopPaddingLabel) {
+    layoutTopPaddingLabel.innerHTML = `${t("상단 여백", "Top padding")} <span id="layout-top-padding-value">${layoutTopPaddingEl?.value || 0}</span>`;
+  }
+  const videoScaleLabel = document.getElementById("video-scale-label");
+  if (videoScaleLabel) {
+    videoScaleLabel.innerHTML = `${t("영상 크기", "Video scale")} <span id="video-scale-value">${videoScaleEl?.value || 100}%</span>`;
+  }
+  const videoYOffsetLabel = document.getElementById("video-y-offset-label");
+  if (videoYOffsetLabel) {
+    videoYOffsetLabel.innerHTML = `${t("영상 Y 위치", "Video Y position")} <span id="video-y-offset-value">${videoYOffsetEl?.value || 0}</span>`;
+  }
+
+  setNodeText("#ranking-list-x-label", t("목록 X 위치", "List X position"));
+  setNodeText("#ranking-list-y-label", t("목록 Y 위치", "List Y position"));
+  setNodeText("#ranking-list-font-size-label", t("글자 크기", "Text size"));
+  setNodeText("#ranking-list-font-weight-label", t("글자 굵기", "Text weight"));
+  setNodeText("#ranking-list-color-label", t("기본 색상", "Base color"));
+  setNodeText("#ranking-list-active-color-label", t("활성 색상", "Active color"));
+  setNodeText("#bgm-volume-label", t("볼륨", "Volume"));
+  setNodeText("#transition-black-enabled-text", t("사용", "Enable"));
+  setNodeText("#subtitle-position-label", t("위치", "Position"));
+  setNodeText("#subtitle-y-offset-label", t("세로 위치 조정", "Vertical offset"));
+  setNodeText("#subtitle-font-size-label", t("자막 폰트 크기", "Caption font size"));
+  setNodeText("#subtitle-font-weight-label", t("폰트 굵기", "Font weight"));
+  setNodeText("#subtitle-text-color-label", t("자막 색상", "Caption color"));
+  setNodeText("#subtitle-bg-color-label", t("자막 배경색", "Caption background"));
+  setNodeText("#subtitle-bg-opacity-label", t("배경 투명도", "Background opacity"));
+  setNodeText("#subtitle-shadow-enabled-text", t("텍스트 그림자", "Text shadow"));
+
+  translateSelectOptions(document.getElementById("title-font-weight"), getSiteLang() === "en"
+    ? ["Bold (600)", "Bolder (700)", "Strong (800)", "Max (900)"]
+    : ["굵게 (600)", "더 굵게 (700)", "강하게 (800)", "최대 (900)"]);
+  translateSelectOptions(document.getElementById("ranking-list-font-weight"), getSiteLang() === "en"
+    ? ["Bold (600)", "Bolder (700)", "Strong (800)", "Max (900)"]
+    : ["굵게 (600)", "더 굵게 (700)", "강하게 (800)", "최대 (900)"]);
+  translateSelectOptions(document.getElementById("subtitle-style-position"), getSiteLang() === "en"
+    ? ["Bottom", "Middle", "Top"]
+    : ["하단", "중앙", "상단"]);
+  translateSelectOptions(document.getElementById("subtitle-position-select"), getSiteLang() === "en"
+    ? ["Bottom", "Middle", "Top"]
+    : ["하단", "중앙", "상단"]);
+  translateSelectOptions(document.getElementById("subtitle-font-weight"), getSiteLang() === "en"
+    ? ["Regular (500)", "Bold (600)", "Bolder (700)", "Strong (800)", "Max (900)"]
+    : ["보통 (500)", "굵게 (600)", "더 굵게 (700)", "강하게 (800)", "최대 (900)"]);
+
+  setNodeText("#back-to-create-btn", t("← 이전", "← Back"));
+  if (!isGeneratingVideo) {
+    setNodeText("#generate-video-btn", t("영상 생성", "Generate video"));
+  }
+  setNodeText("#ranking-items-title", t("랭킹 아이템", "Ranking items"));
+  setNodeText("#timeline-label", t("자막", "Captions"));
+  setNodeText("#timeline-add-btn", t("+ 자막 추가", "+ Add caption"));
+  setNodeText("#preview-video-empty", t("선택한 랭킹 영상이 여기서 재생됩니다", "The selected ranking clip will play here"));
+}
+
+window.translateEmulatorUI = translateEmulatorUI;
+
+function calcCreditsForSeconds(profileKey, seconds) {
+  const p = QUALITY_PROFILES[profileKey] || QUALITY_PROFILES.premium;
+  const mins = Math.max(1, Math.ceil(Number(seconds || 0) / 60));
+  return mins * p.creditsPerMinute;
+}
+
+async function fetchCredits() {
+  try {
+    const res = await fetch("/api/user/info");
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (!data || typeof data.credits !== "number") return null;
+    lastKnownCredits = data.credits;
+    return data.credits;
+  } catch {
+    return null;
+  }
+}
+
+async function openQualityModal(totalSecondsEstimate = 60) {
+  const modal = document.getElementById("quality-modal");
+  if (!modal) return "premium";
+
+  const hint = document.getElementById("quality-modal-hint");
+  const credits = await fetchCredits();
+
+  const mins = Math.max(1, Math.ceil(Number(totalSecondsEstimate || 0) / 60));
+  const hintParts = [`예상 길이: 약 ${mins}분`];
+  if (typeof credits === "number") hintParts.push(`현재 크레딧: ${credits.toLocaleString()}`);
+  if (hint) hint.textContent = hintParts.join(" · ");
+
+  modal.querySelectorAll("button[data-quality]").forEach((btn) => {
+    const key = btn.getAttribute("data-quality") || "premium";
+    const cost = calcCreditsForSeconds(key, totalSecondsEstimate);
+    const desc = btn.querySelector(".quality-option-desc");
+    if (desc) {
+      const base = desc.getAttribute("data-base") || desc.textContent || "";
+      if (!desc.getAttribute("data-base")) desc.setAttribute("data-base", base);
+      desc.textContent = `${base} · 예상 ${cost.toLocaleString()} 크레딧`;
+    }
+  });
+
+  modal.classList.add("is-open");
+  modal.setAttribute("aria-hidden", "false");
+
+  const focusTarget = modal.querySelector('button[data-quality="premium"]') || modal.querySelector("button");
+  if (focusTarget) focusTarget.focus();
+
+  return new Promise((resolve) => {
+    const cleanup = () => {
+      modal.classList.remove("is-open");
+      modal.setAttribute("aria-hidden", "true");
+      modal.querySelectorAll("[data-quality-close]").forEach((el) => el.removeEventListener("click", onClose));
+      modal.querySelectorAll("button[data-quality]").forEach((el) => el.removeEventListener("click", onPick));
+      document.removeEventListener("keydown", onKeyDown);
+    };
+
+    const onClose = () => {
+      cleanup();
+      resolve(null);
+    };
+
+    const onPick = (e) => {
+      const key = e.currentTarget?.getAttribute("data-quality") || "premium";
+      cleanup();
+      resolve(key);
+    };
+
+    const onKeyDown = (e) => {
+      if (e.key === "Escape") onClose();
+    };
+
+    modal.querySelectorAll("[data-quality-close]").forEach((el) => el.addEventListener("click", onClose));
+    modal.querySelectorAll("button[data-quality]").forEach((el) => el.addEventListener("click", onPick));
+    document.addEventListener("keydown", onKeyDown);
+  });
+}
 const defaultSubtitleStyle = {
   position: "bottom",
   yOffset: 0,
@@ -860,7 +1053,7 @@ function initRankingListControls() {
 
 function buildPlayOrderOptions(selected, count) {
   return Array.from({ length: count }, (_, i) => i + 1)
-    .map((n) => `<option ${n === selected ? "selected" : ""}>Play ${n}</option>`)
+    .map((n) => `<option ${n === selected ? "selected" : ""}>${t(`${n}번째로 재생`, `Play ${n}`)}</option>`)
     .join("");
 }
 
@@ -903,7 +1096,7 @@ function render() {
   const orderedItems = getOrderedItems();
 
   if (itemCountEl) {
-    itemCountEl.textContent = `${items.length}개의 비디오 클립`;
+    itemCountEl.textContent = t(`${items.length}개의 비디오 클립`, `${items.length} video clips`);
   }
 
   rankingListEl.innerHTML = orderedItems
@@ -922,7 +1115,7 @@ function render() {
             <select data-rank="${item.rank}">${buildPlayOrderOptions(order, items.length)}</select>
           </div>
           <div class="rank-title-wrap">
-            <h4>${item.title || `Rank ${item.rank}`}</h4>
+            <h4>${item.title || t(`${item.rank}위`, `#${item.rank}`)}</h4>
             <p>${metaText}</p>
           </div>
           <div class="rank-actions">
@@ -958,7 +1151,7 @@ function render() {
   previewListEl.innerHTML = orderedItems
     .map((item) => {
       const active = item.rank === selectedRank;
-      return `<p class="preview-rank-line ${active ? "active" : ""}">${Number(item.playOrder || item.rank)}. ${item.title || `Rank ${item.rank}`}</p>`;
+      return `<p class="preview-rank-line ${active ? "active" : ""}">${Number(item.playOrder || item.rank)}. ${item.title || t(`${item.rank}위`, `#${item.rank}`)}</p>`;
     })
     .join("");
 
@@ -1036,6 +1229,10 @@ function render() {
     });
   });
 }
+
+document.addEventListener("site-language-change", () => {
+  render();
+});
 
 function getSupportedRecordingMimeType() {
   const candidates = [
@@ -1280,6 +1477,15 @@ async function generateFinalVideo() {
     return;
   }
 
+  let secondsEstimate = 0;
+  for (const item of orderedItems) {
+    secondsEstimate += Math.max(0, Number(getItemDurationValue(item) || 0));
+  }
+
+  const picked = await openQualityModal(secondsEstimate);
+  if (!picked) return;
+  const profile = QUALITY_PROFILES[picked] || QUALITY_PROFILES.premium;
+
   isGeneratingVideo = true;
   if (generateVideoBtnEl) {
     generateVideoBtnEl.disabled = true;
@@ -1287,13 +1493,16 @@ async function generateFinalVideo() {
   }
 
   const renderCanvas = document.createElement("canvas");
-  renderCanvas.width = 1080;
-  renderCanvas.height = 1920;
+  renderCanvas.width = BASE_RENDER_WIDTH;
+  renderCanvas.height = BASE_RENDER_HEIGHT;
   const ctx = renderCanvas.getContext("2d");
   const renderVideo = document.createElement("video");
   renderVideo.playsInline = true;
   renderVideo.preload = "auto";
   renderVideo.crossOrigin = "anonymous";
+  renderVideo.muted = false;
+  renderVideo.loop = false;
+  renderVideo.playbackRate = 1;
 
   let audioContext;
   let audioDestination;
@@ -1305,7 +1514,7 @@ async function generateFinalVideo() {
     const sourceNode = audioContext.createMediaElementSource(renderVideo);
     sourceNode.connect(audioDestination);
 
-    const exportFps = 24;
+    const exportFps = profile.fps;
     const frameDurationMs = 1000 / exportFps;
     const stream = renderCanvas.captureStream(exportFps);
     audioDestination.stream.getAudioTracks().forEach((track) => stream.addTrack(track));
@@ -1313,8 +1522,8 @@ async function generateFinalVideo() {
     const chunks = [];
     const recorder = new MediaRecorder(stream, {
       mimeType,
-      videoBitsPerSecond: 8000000,
-      audioBitsPerSecond: 192000
+      videoBitsPerSecond: profile.vBps,
+      audioBitsPerSecond: profile.aBps
     });
     recorder.ondataavailable = (event) => {
       if (event.data && event.data.size > 0) {
@@ -1324,6 +1533,7 @@ async function generateFinalVideo() {
 
     recorder.start(1000);
 
+    let totalDurationSec = 0;
     for (const item of orderedItems) {
       const blob = await readVideoBlob(item.videoKey);
       if (!blob) continue;
@@ -1341,6 +1551,7 @@ async function generateFinalVideo() {
       }
 
       const clipDuration = Math.min(getItemDurationValue(item), renderVideo.duration || getItemDurationValue(item));
+      totalDurationSec += Math.max(0, Number(clipDuration || 0));
       renderVideo.currentTime = 0;
       await waitForMediaEvent(renderVideo, "seeked").catch(() => {});
       if (renderVideo.readyState < 2) {
@@ -1350,6 +1561,8 @@ async function generateFinalVideo() {
 
       const startedAt = performance.now();
       let lastFrameAt = startedAt - frameDurationMs;
+      let lastVideoTime = Number(renderVideo.currentTime || 0);
+      let stallSinceMs = null;
       while ((performance.now() - startedAt) / 1000 < clipDuration) {
         await waitForAnimationFrame();
         const now = performance.now();
@@ -1358,6 +1571,40 @@ async function generateFinalVideo() {
         }
         lastFrameAt = now;
         const elapsedSec = Math.min(clipDuration, (now - startedAt) / 1000);
+
+        // Some browser-recorded sources (or certain MP4s) can stall decoding/advancement mid-playback
+        // while MediaRecorder keeps capturing the last frame. Detect stalls and "kick" the video by seeking.
+        const currentVideoTime = Number(renderVideo.currentTime || 0);
+        const videoAdvanced = (currentVideoTime - lastVideoTime) > 0.03;
+        if (videoAdvanced) {
+          lastVideoTime = currentVideoTime;
+          stallSinceMs = null;
+        } else if (elapsedSec > 1) {
+          if (!stallSinceMs) stallSinceMs = now;
+          const stalledForMs = now - stallSinceMs;
+          if (stalledForMs > 1200) {
+            const targetSec = Math.min(
+              clipDuration,
+              Math.max(0, elapsedSec)
+            );
+
+            const seekTo = Math.max(0, Math.min((renderVideo.duration || clipDuration) - 0.1, targetSec));
+            try {
+              renderVideo.currentTime = seekTo;
+              await Promise.race([
+                waitForMediaEvent(renderVideo, "seeked").catch(() => {}),
+                new Promise((r) => setTimeout(r, 1500))
+              ]);
+              await renderVideo.play().catch(() => {});
+            } catch {
+              // ignore
+            } finally {
+              stallSinceMs = null;
+              lastVideoTime = Number(renderVideo.currentTime || lastVideoTime);
+            }
+          }
+        }
+
         const clipTimeSec = Math.min(
           clipDuration,
           Math.max(elapsedSec, renderVideo.currentTime || 0)
@@ -1389,7 +1636,8 @@ async function generateFinalVideo() {
         generateVideoBtnEl.textContent = "MP4 변환 중...";
       }
 
-      const response = await fetch("/api/transcode-webm", {
+      const secondsForBilling = Math.round(totalDurationSec || secondsEstimate || 0);
+      const response = await fetch(`/api/transcode-webm?quality=${encodeURIComponent(profile.key)}&seconds=${encodeURIComponent(String(secondsForBilling))}`, {
         method: "POST",
         headers: {
           "Content-Type": outputBlob.type || "video/webm"
@@ -1398,17 +1646,29 @@ async function generateFinalVideo() {
       });
 
       if (!response.ok) {
-        throw new Error(`transcode failed: ${response.status}`);
+        const detail = await response.json().catch(() => null);
+        const message = detail && detail.error ? String(detail.error) : `transcode failed: ${response.status}`;
+        throw new Error(message);
       }
 
-      const fallbackName = `shortsmaker-export-${Date.now()}.mp4`;
+      const remaining = response.headers.get("x-remaining-credits");
+      if (remaining && Number.isFinite(Number(remaining))) {
+        lastKnownCredits = Number(remaining);
+      }
+
+      const fallbackName = `shortsmaker-export-${profile.key}-${Date.now()}.mp4`;
       const fileName = parseDownloadFileName(response, fallbackName);
       const arrayBuffer = await response.arrayBuffer();
       const mp4Blob = new Blob([arrayBuffer], { type: "video/mp4" });
       downloadBlob(mp4Blob, fileName);
     } catch (error) {
       console.error("Failed to convert webm to mp4:", error);
-      alert("MP4 변환 서버에 연결하지 못했습니다. start-server.bat를 먼저 실행해야 합니다. 이번에는 WEBM으로 저장합니다.");
+      const msg = String(error?.message || "");
+      if (msg.toLowerCase().includes("insufficient_credits")) {
+        alert("크레딧이 부족합니다. 관리자에게 크레딧을 요청하거나 요금제를 업그레이드해주세요.");
+      } else {
+        alert("MP4 변환 서버에 연결하지 못했습니다. start-server.bat를 먼저 실행해야 합니다. 이번에는 WEBM으로 저장합니다.");
+      }
       downloadBlob(outputBlob, `shortsmaker-export-${Date.now()}.webm`);
     }
   } catch (error) {
@@ -1434,10 +1694,17 @@ async function generateFinalVideo() {
 
 function initCollapsible() {
   document.querySelectorAll(".collapsible-header").forEach((header) => {
-    header.addEventListener("click", () => {
+    if (header.dataset.bound === "true") return;
+    header.dataset.bound = "true";
+    header.style.cursor = "pointer";
+    header.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
       const section = header.closest(".collapsible-section");
+      if (!section) return;
       const content = section.querySelector(".collapsible-content");
       const arrow = section.querySelector(".collapsible-arrow");
+      if (!content || !arrow) return;
       section.classList.toggle("expanded");
       content.classList.toggle("expanded");
       arrow.classList.toggle("expanded");
@@ -1458,7 +1725,19 @@ applyTitleStyles();
 applyLayoutStyles();
 applySceneStyles();
 syncPreviewTitleFromInputs();
+initCollapsible();
+translateEmulatorUI();
+setTimeout(() => translateEmulatorUI(), 0);
+setTimeout(() => translateEmulatorUI(), 80);
 render();
 renderSubtitleTimeline();
-updatePreviewVideoForSelected();
-initCollapsible();
+updatePreviewVideoForSelected().catch((error) => {
+  console.error("Failed to initialize preview video:", error);
+});
+
+document.addEventListener("site-language-change", () => {
+  initCollapsible();
+  translateEmulatorUI();
+  setTimeout(() => translateEmulatorUI(), 0);
+  setTimeout(() => translateEmulatorUI(), 80);
+});

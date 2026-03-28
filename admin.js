@@ -109,16 +109,16 @@ function renderUsers(filterText = "") {
           <td>${escapeHtml(translatePlanName(u.subscriptionPlanKey || "free", "ko"))}</td>
           <td>${Number(u.credits || 0).toLocaleString("ko-KR")}</td>
           <td>
-            <div class="admin-credit-actions">
+            <div class="credit-actions">
               <input class="admin-credit-input" type="number" step="1" placeholder="예: 100" />
               <button class="admin-small-btn" data-action="grant">지급</button>
-              <button class="admin-small-btn danger" data-action="revoke">회수</button>
+              <button class="admin-small-btn is-danger" data-action="revoke">회수</button>
             </div>
           </td>
           <td>
             <div class="admin-setting-actions">
               <button class="admin-small-btn" data-action="set">설정</button>
-              <button class="admin-small-btn danger" data-action="delete">탈퇴</button>
+              <button class="admin-small-btn is-danger" data-action="delete">탈퇴</button>
             </div>
           </td>
           <td>${formatDate(u.createdAt)}</td>
@@ -182,7 +182,9 @@ function bindTableActions() {
 
         button.disabled = true;
         await patchCredits(userId, action, amount);
-        setStatus("크레딧 조정이 반영되었습니다.");
+        const msg = action === "set" ? "크레딧이 설정값으로 변경되었습니다." : "크레딧이 성공적으로 반영되었습니다.";
+        alert(msg);
+        setStatus(msg);
         allUsers = await fetchUsers();
         renderUsers(document.getElementById("searchInput")?.value || "");
         return;
@@ -192,11 +194,13 @@ function bindTableActions() {
         if (!confirm("해당 사용자를 탈퇴 처리하시겠습니까? 관련 데이터도 함께 삭제됩니다.")) return;
         button.disabled = true;
         await deleteUser(userId);
+        alert("사용자 탈퇴 처리가 완료되었습니다.");
         setStatus("사용자 탈퇴가 완료되었습니다.");
         allUsers = await fetchUsers();
         renderUsers(document.getElementById("searchInput")?.value || "");
       }
     } catch (err) {
+      alert("오류 발생: " + (err.message || "알 수 없는 오류"));
       setStatus(err.message || "작업 처리 중 오류가 발생했습니다.");
     } finally {
       button.disabled = false;

@@ -111,13 +111,36 @@
   background: rgba(255, 255, 255, .06);
 }
 
-.credit-actions button.is-danger {
+.credit-actions button.is-danger,
+.admin-small-btn.is-danger {
   background: rgba(239, 68, 68, .12);
   border-color: rgba(239, 68, 68, .35);
+  color: #fecaca;
 }
 
-.credit-actions button.is-danger:hover {
-  background: rgba(239, 68, 68, .18)
+.credit-actions button.is-danger:hover,
+.admin-small-btn.is-danger:hover {
+  background: rgba(239, 68, 68, .22);
+}
+
+.admin-small-btn {
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, .12);
+  background: rgba(255, 255, 255, .06);
+  color: #e5e7eb;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+}
+
+.admin-small-btn:hover {
+  background: rgba(255, 255, 255, .12);
+}
+
+.admin-small-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .admin-delete-user-btn {

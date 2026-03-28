@@ -1747,7 +1747,9 @@ async function applyFreeTierLocks() {
   try {
     const res = await fetch("/api/user/info");
     const data = res.ok ? await res.json() : null;
-    const isFree = !data || !data.subscriptionPlan || data.subscriptionPlan === "무료" || data.subscriptionPlan === "Free";
+
+    // Check both plan name and status key to be bulletproof
+    const isFree = !data || !data.subscriptionStatus || data.subscriptionStatus === "free" || data.subscriptionPlan === "무료" || data.subscriptionPlan === "Free";
 
     if (isFree) {
       const lockTitles = [

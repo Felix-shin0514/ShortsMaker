@@ -176,6 +176,6 @@
   const loginBtn = document.getElementById("googleLoginBtn");
   if (loginBtn) loginBtn.addEventListener("click", signInWithGoogle);
 
-  initLandingVideos();
+  // initLandingVideos(); // 오버라이드 방지: HTML에 하드코딩된 로컬 영상을 그대로 사용
   handleRedirectResult();
 })();

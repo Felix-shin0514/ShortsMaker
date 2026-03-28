@@ -1,5 +1,6 @@
 ﻿<!doctype html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,6 +9,7 @@
   <link rel="stylesheet" href="./pricing.css" />
   <link rel="stylesheet" href="./lang.css?v=20260326-5" />
 </head>
+
 <body class="dashboard-page pricing-page" data-page="pricing">
   <header class="dash-nav">
     <div class="dash-nav-inner">
@@ -30,7 +32,8 @@
         </div>
         <span id="user-name-top" style="display:none;"></span>
         <button id="logout-btn" class="dash-logout-btn" style="display:none;">로그아웃</button>
-        <a id="login-link" class="dash-logout-btn" style="display:none; text-decoration:none;" href="./login.html?next=%2Fpricing.html">로그인</a>
+        <a id="login-link" class="dash-logout-btn" style="display:none; text-decoration:none;"
+          href="./login.html?next=%2Fpricing.html">로그인</a>
       </div>
     </div>
   </header>
@@ -46,8 +49,25 @@
     <section class="pricing-grid" aria-label="요금제">
       <article class="plan-card">
         <header class="plan-head">
+          <h2>무료</h2>
+          <div class="plan-price"><span class="amount">무료</span></div>
+        </header>
+        <div class="plan-credit">월 <b>200</b> 크레딧 제공<br><small>소진 시 광고 시청 후 다운로드</small></div>
+        <ul class="plan-features">
+          <li>가볍게 시작하는 무료 플랜</li>
+          <li>기본 처리 속도</li>
+          <li>Standard 화질로 효율적 제작</li>
+        </ul>
+        <div class="plan-trial">✓ 평생 무료</div>
+        <button class="plan-cta" data-plan="free">시작하기</button>
+        <p class="plan-note">가입 즉시 무료 이용</p>
+      </article>
+
+      <article class="plan-card">
+        <header class="plan-head">
           <h2>베이직</h2>
-          <div class="plan-price"><span class="won">₩</span><span class="amount">9,900</span><span class="per">/월</span></div>
+          <div class="plan-price"><span class="won">₩</span><span class="amount">9,900</span><span class="per">/월</span>
+          </div>
         </header>
         <div class="plan-credit">월 <b>1,000</b> 크레딧<br><small>월 1분 영상 약 10개 제작 가능</small></div>
         <ul class="plan-features">
@@ -64,7 +84,8 @@
         <div class="plan-badge">인기</div>
         <header class="plan-head">
           <h2>프로</h2>
-          <div class="plan-price"><span class="won">₩</span><span class="amount">16,900</span><span class="per">/월</span></div>
+          <div class="plan-price"><span class="won">₩</span><span class="amount">16,900</span><span
+              class="per">/월</span></div>
         </header>
         <div class="plan-credit">월 <b>2,000</b> 크레딧<br><small>월 1분 영상 약 20개 제작 가능</small></div>
         <ul class="plan-features">
@@ -81,7 +102,8 @@
       <article class="plan-card">
         <header class="plan-head">
           <h2>크리에이터</h2>
-          <div class="plan-price"><span class="won">₩</span><span class="amount">29,900</span><span class="per">/월</span></div>
+          <div class="plan-price"><span class="won">₩</span><span class="amount">29,900</span><span
+              class="per">/월</span></div>
         </header>
         <div class="plan-credit">월 <b>4,000</b> 크레딧<br><small>월 1분 영상 약 40개 제작 가능</small></div>
         <ul class="plan-features">
@@ -109,10 +131,12 @@
 
         <div class="credit-form">
           <label class="credit-label" for="avgSecondsInput">평균 영상 길이 (초)</label>
-          <input id="avgSecondsInput" class="credit-input" type="number" min="1" max="3600" value="60" inputmode="numeric" />
+          <input id="avgSecondsInput" class="credit-input" type="number" min="1" max="3600" value="60"
+            inputmode="numeric" />
 
           <label class="credit-label" for="monthlyCountInput">월간 제작 개수</label>
-          <input id="monthlyCountInput" class="credit-input" type="number" min="1" max="100000" value="10" inputmode="numeric" />
+          <input id="monthlyCountInput" class="credit-input" type="number" min="1" max="100000" value="10"
+            inputmode="numeric" />
         </div>
 
         <div class="credit-result">
@@ -167,4 +191,5 @@
   <script src="./lang.js?v=20260326-5"></script>
   <script src="./pricing.js?v=20260326-1"></script>
 </body>
+
 </html>

@@ -86,6 +86,7 @@ function renderUsers(filterText = "") {
         <tr data-user-id="${escapeHtml(u.id)}">
           <td>${escapeHtml(u.displayName || "-")}</td>
           <td>${escapeHtml(u.email || "-")}</td>
+          <td>${escapeHtml(translatePlanName(u.subscriptionPlanKey || "free", "ko"))}</td>
           <td>${Number(u.credits || 0).toLocaleString("ko-KR")}</td>
           <td>
             <div class="admin-credit-actions">

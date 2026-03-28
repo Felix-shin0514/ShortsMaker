@@ -106,8 +106,15 @@ function renderUsers(filterText = "") {
         <tr data-user-id="${escapeHtml(u.id)}">
           <td>${escapeHtml(u.displayName || "-")}</td>
           <td>${escapeHtml(u.email || "-")}</td>
-          <td>${escapeHtml(translatePlanName(u.subscriptionPlanKey || "free", "ko"))}</td>
-          <td>${Number(u.credits || 0).toLocaleString("ko-KR")}</td>
+          <td>
+            <select class="admin-plan-select" data-user-id="${escapeHtml(u.id)}">
+              <option value="free" ${u.subscriptionPlanKey === "free" ? "selected" : ""}>무료</option>
+              <option value="basic" ${u.subscriptionPlanKey === "basic" ? "selected" : ""}>베이직</option>
+              <option value="pro" ${u.subscriptionPlanKey === "pro" ? "selected" : ""}>프로</option>
+              <option value="creator" ${u.subscriptionPlanKey === "creator" ? "selected" : ""}>크리에이터</option>
+            </select>
+          </td>
+          <td class="admin-credit-cell">${Number(u.credits || 0).toLocaleString("ko-KR")}</td>
           <td>
             <div class="credit-actions">
               <input class="admin-credit-input" type="number" step="1" placeholder="예: 100" />
@@ -144,6 +151,19 @@ async function patchCredits(userId, action, amount) {
   if (!res.ok) {
     const detail = await readApiError(res);
     throw new Error(detail || "credit_update_failed");
+  }
+}
+
+async function patchUserPlan(userId, planKey) {
+  const res = await fetch(`/api/admin/users/${encodeURIComponent(userId)}/plan`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ planKey })
+  });
+
+  if (!res.ok) {
+    const detail = await readApiError(res);
+    throw new Error(detail || "plan_update_failed");
   }
 }
 
@@ -204,6 +224,29 @@ function bindTableActions() {
       setStatus(err.message || "작업 처리 중 오류가 발생했습니다.");
     } finally {
       button.disabled = false;
+    }
+  });
+
+  // Plan change event
+  tbody.addEventListener("change", async (event) => {
+    const select = event.target.closest(".admin-plan-select");
+    if (!select) return;
+
+    const userId = select.dataset.userId;
+    const planKey = select.value;
+
+    try {
+      select.disabled = true;
+      await patchUserPlan(userId, planKey);
+      alert(`요금제가 '${planKey}'로 변경되었습니다.`);
+      setStatus("요금제 변경이 반영되었습니다.");
+      allUsers = await fetchUsers();
+      renderUsers(document.getElementById("searchInput")?.value || "");
+    } catch (err) {
+      alert("요금제 변경 실패: " + (err.message || "알 수 없는 오류"));
+      setStatus(err.message || "요금제 변경 중 오류가 발생했습니다.");
+    } finally {
+      select.disabled = false;
     }
   });
 }

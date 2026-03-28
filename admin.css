@@ -54,7 +54,6 @@
   text-align: left;
   vertical-align: middle;
   font-size: 13px;
-  white-space: nowrap;
 }
 
 .admin-table th {
@@ -74,9 +73,10 @@
 
 .credit-actions {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  white-space: nowrap;
 }
 
 .credit-actions input {
@@ -154,4 +154,34 @@
 
 .admin-delete-user-btn:hover {
   background: rgba(239, 68, 68, .18);
+}
+
+.admin-plan-select {
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, .12);
+  background: rgba(0, 0, 0, .25);
+  color: #e5e7eb;
+  font-size: 12px;
+  outline: none;
+  cursor: pointer;
+  width: 90px;
+}
+
+.admin-plan-select:hover {
+  background: rgba(255, 255, 255, .05);
+}
+
+.admin-credit-cell {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: #fbbf24;
+  /* highlight credit values */
+}
+
+.admin-setting-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: nowrap;
 }

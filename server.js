@@ -1065,6 +1065,52 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  if (req.method === "POST" && /^\/api\/admin\/users\/[^/]+\/plan$/.test(url.pathname)) {
+    const ctx = await requireAuth(req, res);
+    if (!ctx) return;
+    if (!isAdminUser(ctx.user)) {
+      console.warn(`Admin plan update denied for user: ${ctx.user?.email || "unknown"} targeting ${url.pathname}`);
+      sendApiJson(res, 403, { error: "Forbidden" });
+      return;
+    }
+
+    const parts = url.pathname.split("/").filter(Boolean);
+    const userId = parts[3] || "";
+
+    let body = null;
+    try {
+      body = parseJsonBody(await readRequestBody(req)) || {};
+    } catch {
+      sendApiJson(res, 400, { error: "Invalid JSON" });
+      return;
+    }
+
+    const planKey = (body.planKey || "").toLowerCase();
+    const plan = PLANS[planKey];
+    if (!plan) {
+      sendApiJson(res, 400, { error: "Invalid plan key" });
+      return;
+    }
+
+    const now = Date.now();
+    const updated = await store.updateUser(userId, {
+      subscriptionPlanKey: plan.key,
+      subscriptionPlanName: plan.name,
+      subscriptionMonthlyCredits: plan.monthlyCredits || 0,
+      subscriptionPriority: plan.priority || 0,
+      subscriptionStatus: "active",
+      subscriptionRenewAtMs: now + 30 * 24 * 60 * 60 * 1000 // 30 days
+    });
+
+    if (!updated) {
+      sendApiJson(res, 404, { error: "Not found" });
+      return;
+    }
+
+    sendApiJson(res, 200, { success: true, user: updated });
+    return;
+  }
+
   if (req.method === "DELETE" && /^\/api\/admin\/users\/[^/]+$/.test(url.pathname)) {
     const ctx = await requireAuth(req, res);
     if (!ctx) return;

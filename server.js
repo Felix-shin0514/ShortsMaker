@@ -208,6 +208,14 @@ async function serveStatic(req, res) {
     const ext = path.extname(absPath).toLowerCase();
     const mimeType = MIME_TYPES[ext] || "application/octet-stream";
     setCorsHeaders(res);
+
+    // Prevent aggressive HTML caching that ignores version query strings
+    if (ext === ".html") {
+      res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+      res.setHeader("Pragma", "no-cache");
+      res.setHeader("Expires", "0");
+    }
+
     res.writeHead(200, { "Content-Type": mimeType });
     fs.createReadStream(absPath).pipe(res);
   } catch {

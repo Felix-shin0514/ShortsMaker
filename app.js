@@ -1751,6 +1751,24 @@ async function applyFreeTierLocks() {
     // Check both plan name and status key to be bulletproof
     const isFree = !data || !data.subscriptionStatus || data.subscriptionStatus === "free" || data.subscriptionPlan === "무료" || data.subscriptionPlan === "Free";
 
+    // DEBUG UI
+    let debugEl = document.getElementById("debug-free-tier");
+    if (!debugEl) {
+      debugEl = document.createElement("div");
+      debugEl.id = "debug-free-tier";
+      debugEl.style.position = "fixed";
+      debugEl.style.top = "10px";
+      debugEl.style.left = "50%";
+      debugEl.style.transform = "translateX(-50%)";
+      debugEl.style.backgroundColor = "yellow";
+      debugEl.style.color = "black";
+      debugEl.style.padding = "10px";
+      debugEl.style.zIndex = "999999";
+      debugEl.style.fontWeight = "bold";
+      document.body.appendChild(debugEl);
+    }
+    debugEl.innerHTML = "isFree: " + isFree + " | status: " + (data ? data.subscriptionStatus : 'null');
+
     if (isFree) {
       const applyLocks = () => {
         const targetIds = [
@@ -1790,7 +1808,6 @@ async function applyFreeTierLocks() {
         });
       };
 
-      // Call it immediately and also repeatedly for 2 seconds to beat any race conditions
       applyLocks();
       let count = 0;
       const interval = setInterval(() => {

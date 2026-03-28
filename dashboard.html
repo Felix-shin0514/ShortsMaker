@@ -1,12 +1,16 @@
 ﻿<!doctype html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard</title>
   <link rel="stylesheet" href="./dashboard.css" />
   <link rel="stylesheet" href="./lang.css" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9245830608057125"
+    crossorigin="anonymous"></script>
 </head>
+
 <body class="dashboard-page" data-page="dashboard">
   <header class="dash-nav">
     <div class="dash-nav-inner">
@@ -41,9 +45,18 @@
     </header>
 
     <section class="dashboard-stats stats-grid">
-      <article class="stat-card"><div class="stat-value" id="credit-balance">0</div><div class="stat-label">남은 크레딧</div></article>
-      <article class="stat-card"><div class="stat-value" id="video-count">0</div><div class="stat-label">제작 영상</div></article>
-      <article class="stat-card"><div class="stat-value" id="subscription-plan">무료</div><div class="stat-label">현재 플랜</div></article>
+      <article class="stat-card">
+        <div class="stat-value" id="credit-balance">0</div>
+        <div class="stat-label">남은 크레딧</div>
+      </article>
+      <article class="stat-card">
+        <div class="stat-value" id="video-count">0</div>
+        <div class="stat-label">제작 영상</div>
+      </article>
+      <article class="stat-card">
+        <div class="stat-value" id="subscription-plan">무료</div>
+        <div class="stat-label">현재 플랜</div>
+      </article>
     </section>
 
     <section class="create-section dashboard-content">
@@ -53,16 +66,9 @@
         <a id="ranking-template-btn" class="template-card-v2" href="./ranking-create.html">
           <span class="tag hot">HOT</span>
           <div class="template-preview-phone" aria-hidden="true">
-            <video
-              id="ranking-sample-video"
-              class="template-preview-video"
-              src="./assets/videos/shortsmaker-export-1773107140169.mp4"
-              muted
-              autoplay
-              loop
-              playsinline
-              preload="metadata"
-            ></video>
+            <video id="ranking-sample-video" class="template-preview-video"
+              src="./assets/videos/shortsmaker-export-1773107140169.mp4" muted autoplay loop playsinline
+              preload="metadata"></video>
           </div>
           <div class="template-card-content">
             <div class="card-title">랭킹 영상</div>
@@ -74,12 +80,16 @@
     <section class="projects-videos-section">
       <div class="pv-container">
         <div class="pv-box">
-          <div class="pv-header"><h3>저장된 프로젝트</h3></div>
+          <div class="pv-header">
+            <h3>저장된 프로젝트</h3>
+          </div>
           <div class="pv-content" id="projects-container"></div>
           <div class="pv-pagination" id="projects-pagination"></div>
         </div>
         <div class="pv-box">
-          <div class="pv-header"><h3>내가 만든 영상</h3></div>
+          <div class="pv-header">
+            <h3>내가 만든 영상</h3>
+          </div>
           <div class="pv-content" id="videos-container"></div>
           <div class="pv-pagination" id="videos-pagination"></div>
         </div>
@@ -116,5 +126,5 @@
   <script src="./lang.js?v=20260326-5"></script>
   <script src="./dashboard.js?v=20260325-2"></script>
 </body>
-</html>
 
+</html>

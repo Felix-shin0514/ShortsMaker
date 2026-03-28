@@ -1752,45 +1752,56 @@ async function applyFreeTierLocks() {
     const isFree = !data || !data.subscriptionStatus || data.subscriptionStatus === "free" || data.subscriptionPlan === "무료" || data.subscriptionPlan === "Free";
 
     if (isFree) {
-      const lockTitles = [
-        "layout-controls-title",
-        "ranking-list-settings-title",
-        "background-music-title",
-        "transition-black-title",
-        "background-color-title",
-        "caption-settings-title" // Just in case, if they shouldn't use it, wait, user said subtitles ARE allowed for free tier. So let's exclude caption.
-      ];
+      const applyLocks = () => {
+        const targetIds = [
+          "layout-controls-title",
+          "ranking-list-settings-title",
+          "background-music-title",
+          "transition-black-title",
+          "background-color-title"
+        ];
 
-      const targetIds = [
-        "layout-controls-title",
-        "ranking-list-settings-title",
-        "background-music-title",
-        "transition-black-title",
-        "background-color-title"
-      ];
+        targetIds.forEach(id => {
+          const titleEl = document.getElementById(id);
+          if (titleEl) {
+            const section = titleEl.closest(".collapsible-section") || titleEl.closest(".setting-section");
+            if (section) {
+              section.classList.add("free-tier-locked");
+              section.style.pointerEvents = "none";
+              section.style.opacity = "0.5";
+              section.style.filter = "grayscale(100%)";
 
-      targetIds.forEach(id => {
-        const titleEl = document.getElementById(id);
-        if (titleEl) {
-          const section = titleEl.closest(".collapsible-section") || titleEl.closest(".setting-section");
-          if (section) {
-            section.classList.add("free-tier-locked");
-            if (!section.querySelector('.pro-badge')) {
-              const badge = document.createElement("span");
-              badge.className = "pro-badge";
-              badge.textContent = "🔒 구독 전용";
-              // Append to header if it exists, otherwise to section
-              const header = section.querySelector(".collapsible-header") || titleEl.parentNode;
-              // Insert badge right after the title element
-              titleEl.insertAdjacentElement("afterend", badge);
+              if (!section.querySelector('.pro-badge')) {
+                const badge = document.createElement("span");
+                badge.className = "pro-badge";
+                badge.textContent = " 🔒 구독 전용";
+                badge.style.fontSize = "11px";
+                badge.style.background = "rgba(255, 60, 60, 0.15)";
+                badge.style.color = "#ff4d4d";
+                badge.style.padding = "2px 6px";
+                badge.style.borderRadius = "4px";
+                badge.style.marginLeft = "6px";
+                badge.style.fontWeight = "800";
+                badge.style.verticalAlign = "middle";
+                titleEl.insertAdjacentElement("afterend", badge);
+              }
             }
           }
-        }
-      });
+        });
+      };
+
+      // Call it immediately and also repeatedly for 2 seconds to beat any race conditions
+      applyLocks();
+      let count = 0;
+      const interval = setInterval(() => {
+        applyLocks();
+        if (++count > 20) clearInterval(interval);
+      }, 100);
     }
   } catch (err) {
-    console.error(err);
+    console.error("applyFreeTierLocks Error:", err);
   }
 }
+
 
 applyFreeTierLocks();

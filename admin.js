@@ -1,5 +1,25 @@
 let allUsers = [];
 
+function translatePlanName(planName, lang = "ko") {
+  const raw = String(planName || "").trim();
+  const map = {
+    "무료": { ko: "무료", en: "Free" },
+    "베이직": { ko: "베이직", en: "Basic" },
+    "프로": { ko: "프로", en: "Pro" },
+    "크리에이터": { ko: "크리에이터", en: "Creator" },
+    "Free": { ko: "무료", en: "Free" },
+    "Basic": { ko: "베이직", en: "Basic" },
+    "Pro": { ko: "프로", en: "Pro" },
+    "Creator": { ko: "크리에이터", en: "Creator" },
+    "free": { ko: "무료", en: "Free" },
+    "basic": { ko: "베이직", en: "Basic" },
+    "pro": { ko: "프로", en: "Pro" },
+    "creator": { ko: "크리에이터", en: "Creator" }
+  };
+  const normalized = map[raw] || map["무료"];
+  return normalized[lang === "en" ? "en" : "ko"];
+}
+
 function escapeHtml(text) {
   return String(text)
     .replaceAll("&", "&amp;")

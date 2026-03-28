@@ -1,27 +1,40 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>환불정책 - ShortsMaker</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="./style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="./dashboard.css" />
   <link rel="stylesheet" href="./legal.css" />
+  <link rel="stylesheet" href="./lang.css" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9245830608057125"
+    crossorigin="anonymous"></script>
 </head>
+
 <body class="legal-page">
-  <header class="site-header">
-    <div class="logo-wrap">
-      <a class="logo-link" href="./login.html">Shorts<span>Maker</span></a>
-    </div>
-    <nav class="header-nav">
-      <a href="./dashboard.html">대시보드</a>
-      <a href="./pricing.html">요금제</a>
-      <a href="./support.html">고객센터</a>
-    </nav>
-    <div class="header-actions">
-      <a class="header-login" href="./login.html">로그인</a>
+  <header class="dash-nav">
+    <div class="dash-nav-inner">
+      <a class="dash-logo" href="./dashboard.html">
+        <span class="dash-logo-shorts">Shorts</span><span class="dash-logo-craft">maker</span>
+      </a>
+      <nav class="dash-nav-center">
+        <a href="./dashboard.html">대시보드</a>
+        <a href="./pricing.html">요금제</a>
+        <a href="./support.html">고객센터</a>
+      </nav>
+      <div class="dash-nav-right" id="navRight">
+        <div class="lang-switch" aria-label="Language switch">
+          <button class="lang-option" type="button" data-lang-option="ko">KOR</button>
+          <span class="lang-divider">/</span>
+          <button class="lang-option" type="button" data-lang-option="en">ENG</button>
+        </div>
+        <a id="login-link" class="dash-logout-btn" style="text-decoration:none;" href="./login.html">로그인</a>
+      </div>
     </div>
   </header>
 
@@ -33,10 +46,11 @@
 
     <section class="legal-card">
       <nav class="legal-toc">
-        <a href="./terms.html">이용약관</a>
-        <a href="./privacy.html">개인정보처리방침</a>
-        <a class="active" href="./refund.html">환불정책</a>
-        <a href="./marketing.html">광고수신동의 철회</a>
+        <a class="legal-pill" href="./terms.html">이용약관</a>
+        <a class="legal-pill" href="./privacy.html">개인정보처리방침</a>
+        <a class="legal-pill active" href="./refund.html"
+          style="background:rgba(255,255,255,0.1); border-color:var(--legal-accent);">환불정책</a>
+        <a class="legal-pill" href="./marketing.html">광고수신동의 철회</a>
       </nav>
 
       <section class="legal-section">
@@ -92,5 +106,7 @@
   <footer class="legal-footer">
     <p>© 2025-2026 ShortsMaker. All rights reserved.</p>
   </footer>
+  <script src="./lang.js?v=20260326-5"></script>
 </body>
+
 </html>

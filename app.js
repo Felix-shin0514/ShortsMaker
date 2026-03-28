@@ -1743,7 +1743,7 @@ document.addEventListener("site-language-change", () => {
 });
 
 async function applyFreeTierLocks() {
-  if (document.body.dataset.page !== "emulator") return;
+  if (document.body.dataset.page !== "emulator" && document.body.dataset.page !== "editor") return;
   try {
     const res = await fetch("/api/user/info");
     const data = res.ok ? await res.json() : null;
@@ -1755,15 +1755,33 @@ async function applyFreeTierLocks() {
         "ranking-list-settings-title",
         "background-music-title",
         "transition-black-title",
+        "background-color-title",
+        "caption-settings-title" // Just in case, if they shouldn't use it, wait, user said subtitles ARE allowed for free tier. So let's exclude caption.
+      ];
+
+      const targetIds = [
+        "layout-controls-title",
+        "ranking-list-settings-title",
+        "background-music-title",
+        "transition-black-title",
         "background-color-title"
       ];
-      lockTitles.forEach(id => {
+
+      targetIds.forEach(id => {
         const titleEl = document.getElementById(id);
         if (titleEl) {
-          const section = titleEl.closest(".collapsible-section");
+          const section = titleEl.closest(".collapsible-section") || titleEl.closest(".setting-section");
           if (section) {
             section.classList.add("free-tier-locked");
-            titleEl.innerHTML += ` <span class="pro-badge">🔒 구독 전용</span>`;
+            if (!section.querySelector('.pro-badge')) {
+              const badge = document.createElement("span");
+              badge.className = "pro-badge";
+              badge.textContent = "🔒 구독 전용";
+              // Append to header if it exists, otherwise to section
+              const header = section.querySelector(".collapsible-header") || titleEl.parentNode;
+              // Insert badge right after the title element
+              titleEl.insertAdjacentElement("afterend", badge);
+            }
           }
         }
       });

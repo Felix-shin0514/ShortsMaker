@@ -1,4 +1,4 @@
-  const defaultItems = [
+ï»¿  const defaultItems = [
     { rank: 1, title: "Rank 1", duration: "10.0s", file: "", playOrder: 1, videoKey: "" },
     { rank: 2, title: "Rank 2", duration: "10.0s", file: "", playOrder: 2, videoKey: "" },
     { rank: 3, title: "Rank 3", duration: "10.0s", file: "", playOrder: 3, videoKey: "" },
@@ -101,81 +101,81 @@
   function translateEmulatorUI() {
     if (!document.body || document.body.dataset.page !== "emulator") return;
 
-    document.title = t("·©Å· ¿¡¹Ä·¹ÀÌÅÍ - ShortsMaker", "Ranking Emulator - ShortsMaker");
+    document.title = t("ë­í‚¹ ì—ë®¬ë ˆì´í„° - ShortsMaker", "Ranking Emulator - ShortsMaker");
 
-    setNodeText("#project-settings-title", t("ÇÁ·ÎÁ§Æ® ¼³Á¤", "Project settings"));
-    setNodeText("#ranking-video-label", t("·©Å· ¿µ»ó", "Ranking video"));
-    setNodeText("#title-settings-title", t("Å¸ÀÌÆ² ¼³Á¤", "Title settings"));
-    setNodeText("#title-line-1-label", t("Ã¹ ¹øÂ° ÁÙ", "First line"));
-    setNodeText("#title-line-2-label", t("µÎ ¹øÂ° ÁÙ", "Second line"));
-    setNodeText("#title-x-offset-label", t("Á¦¸ñ X À§Ä¡", "Title X position"));
-    setNodeText("#title-y-offset-label", t("Á¦¸ñ Y À§Ä¡", "Title Y position"));
-    setNodeText("#title-line1-font-size-label", t("Ã¹ ¹øÂ° ÁÙ Å©±â", "First line size"));
-    setNodeText("#title-line2-font-size-label", t("µÎ ¹øÂ° ÁÙ Å©±â", "Second line size"));
-    setNodeText("#title-font-weight-label", t("Á¦¸ñ ±½±â", "Title weight"));
-    setNodeText("#title-line1-color-label", t("Ã¹ ¹øÂ° ÁÙ »ö»ó", "First line color"));
-    setNodeText("#title-line2-color-label", t("µÎ ¹øÂ° ÁÙ »ö»ó", "Second line color"));
-    setNodeText("#layout-controls-title", t("·¹ÀÌ¾Æ¿ô À§Ä¡ Á¶Àı", "Layout controls"));
-    setNodeText("#ranking-list-settings-title", t("·©Å· ¸ñ·Ï ¼³Á¤", "Ranking list settings"));
-    setNodeText("#background-music-title", t("¹è°æÀ½¾Ç (ÀüÃ¼ ¿µ»ó)", "Background music"));
-    setNodeText("#transition-black-title", t("ÀüÈ¯ °ËÀº È­¸é", "Black transition screen"));
-    setNodeText("#background-color-title", t("¹è°æ »ö»ó", "Background color"));
-    setNodeText("#caption-settings-title", t("ÀÚ¸· ¼³Á¤ (ÀüÃ¼ ¿µ»ó)", "Caption settings"));
+    setNodeText("#project-settings-title", t("í”„ë¡œì íŠ¸ ì„¤ì •", "Project settings"));
+    setNodeText("#ranking-video-label", t("ë­í‚¹ ì˜ìƒ", "Ranking video"));
+    setNodeText("#title-settings-title", t("íƒ€ì´í‹€ ì„¤ì •", "Title settings"));
+    setNodeText("#title-line-1-label", t("ì²« ë²ˆì§¸ ì¤„", "First line"));
+    setNodeText("#title-line-2-label", t("ë‘ ë²ˆì§¸ ì¤„", "Second line"));
+    setNodeText("#title-x-offset-label", t("ì œëª© X ìœ„ì¹˜", "Title X position"));
+    setNodeText("#title-y-offset-label", t("ì œëª© Y ìœ„ì¹˜", "Title Y position"));
+    setNodeText("#title-line1-font-size-label", t("ì²« ë²ˆì§¸ ì¤„ í¬ê¸°", "First line size"));
+    setNodeText("#title-line2-font-size-label", t("ë‘ ë²ˆì§¸ ì¤„ í¬ê¸°", "Second line size"));
+    setNodeText("#title-font-weight-label", t("ì œëª© êµµê¸°", "Title weight"));
+    setNodeText("#title-line1-color-label", t("ì²« ë²ˆì§¸ ì¤„ ìƒ‰ìƒ", "First line color"));
+    setNodeText("#title-line2-color-label", t("ë‘ ë²ˆì§¸ ì¤„ ìƒ‰ìƒ", "Second line color"));
+    setNodeText("#layout-controls-title", t("ë ˆì´ì•„ì›ƒ ìœ„ì¹˜ ì¡°ì ˆ", "Layout controls"));
+    setNodeText("#ranking-list-settings-title", t("ë­í‚¹ ëª©ë¡ ì„¤ì •", "Ranking list settings"));
+    setNodeText("#background-music-title", t("ë°°ê²½ìŒì•… (ì „ì²´ ì˜ìƒ)", "Background music"));
+    setNodeText("#transition-black-title", t("ì „í™˜ ê²€ì€ í™”ë©´", "Black transition screen"));
+    setNodeText("#background-color-title", t("ë°°ê²½ ìƒ‰ìƒ", "Background color"));
+    setNodeText("#caption-settings-title", t("ìë§‰ ì„¤ì • (ì „ì²´ ì˜ìƒ)", "Caption settings"));
 
     const layoutTopPaddingLabel = document.getElementById("layout-top-padding-label");
     if (layoutTopPaddingLabel) {
-      layoutTopPaddingLabel.innerHTML = `${t("»ó´Ü ¿©¹é", "Top padding")} <span id="layout-top-padding-value">${layoutTopPaddingEl?.value || 0}</span>`;
+      layoutTopPaddingLabel.innerHTML = `${t("ìƒë‹¨ ì—¬ë°±", "Top padding")} <span id="layout-top-padding-value">${layoutTopPaddingEl?.value || 0}</span>`;
     }
     const videoScaleLabel = document.getElementById("video-scale-label");
     if (videoScaleLabel) {
-      videoScaleLabel.innerHTML = `${t("¿µ»ó Å©±â", "Video scale")} <span id="video-scale-value">${videoScaleEl?.value || 100}%</span>`;
+      videoScaleLabel.innerHTML = `${t("ì˜ìƒ í¬ê¸°", "Video scale")} <span id="video-scale-value">${videoScaleEl?.value || 100}%</span>`;
     }
     const videoYOffsetLabel = document.getElementById("video-y-offset-label");
     if (videoYOffsetLabel) {
-      videoYOffsetLabel.innerHTML = `${t("¿µ»ó Y À§Ä¡", "Video Y position")} <span id="video-y-offset-value">${videoYOffsetEl?.value || 0}</span>`;
+      videoYOffsetLabel.innerHTML = `${t("ì˜ìƒ Y ìœ„ì¹˜", "Video Y position")} <span id="video-y-offset-value">${videoYOffsetEl?.value || 0}</span>`;
     }
 
-    setNodeText("#ranking-list-x-label", t("¸ñ·Ï X À§Ä¡", "List X position"));
-    setNodeText("#ranking-list-y-label", t("¸ñ·Ï Y À§Ä¡", "List Y position"));
-    setNodeText("#ranking-list-font-size-label", t("±ÛÀÚ Å©±â", "Text size"));
-    setNodeText("#ranking-list-font-weight-label", t("±ÛÀÚ ±½±â", "Text weight"));
-    setNodeText("#ranking-list-color-label", t("±âº» »ö»ó", "Base color"));
-    setNodeText("#ranking-list-active-color-label", t("È°¼º »ö»ó", "Active color"));
-    setNodeText("#bgm-volume-label", t("º¼·ı", "Volume"));
-    setNodeText("#transition-black-enabled-text", t("»ç¿ë", "Enable"));
-    setNodeText("#subtitle-position-label", t("À§Ä¡", "Position"));
-    setNodeText("#subtitle-y-offset-label", t("¼¼·Î À§Ä¡ Á¶Á¤", "Vertical offset"));
-    setNodeText("#subtitle-font-size-label", t("ÀÚ¸· ÆùÆ® Å©±â", "Caption font size"));
-    setNodeText("#subtitle-font-weight-label", t("ÆùÆ® ±½±â", "Font weight"));
-    setNodeText("#subtitle-text-color-label", t("ÀÚ¸· »ö»ó", "Caption color"));
-    setNodeText("#subtitle-bg-color-label", t("ÀÚ¸· ¹è°æ»ö", "Caption background"));
-    setNodeText("#subtitle-bg-opacity-label", t("¹è°æ Åõ¸íµµ", "Background opacity"));
-    setNodeText("#subtitle-shadow-enabled-text", t("ÅØ½ºÆ® ±×¸²ÀÚ", "Text shadow"));
+    setNodeText("#ranking-list-x-label", t("ëª©ë¡ X ìœ„ì¹˜", "List X position"));
+    setNodeText("#ranking-list-y-label", t("ëª©ë¡ Y ìœ„ì¹˜", "List Y position"));
+    setNodeText("#ranking-list-font-size-label", t("ê¸€ì í¬ê¸°", "Text size"));
+    setNodeText("#ranking-list-font-weight-label", t("ê¸€ì êµµê¸°", "Text weight"));
+    setNodeText("#ranking-list-color-label", t("ê¸°ë³¸ ìƒ‰ìƒ", "Base color"));
+    setNodeText("#ranking-list-active-color-label", t("í™œì„± ìƒ‰ìƒ", "Active color"));
+    setNodeText("#bgm-volume-label", t("ë³¼ë¥¨", "Volume"));
+    setNodeText("#transition-black-enabled-text", t("ì‚¬ìš©", "Enable"));
+    setNodeText("#subtitle-position-label", t("ìœ„ì¹˜", "Position"));
+    setNodeText("#subtitle-y-offset-label", t("ì„¸ë¡œ ìœ„ì¹˜ ì¡°ì •", "Vertical offset"));
+    setNodeText("#subtitle-font-size-label", t("ìë§‰ í°íŠ¸ í¬ê¸°", "Caption font size"));
+    setNodeText("#subtitle-font-weight-label", t("í°íŠ¸ êµµê¸°", "Font weight"));
+    setNodeText("#subtitle-text-color-label", t("ìë§‰ ìƒ‰ìƒ", "Caption color"));
+    setNodeText("#subtitle-bg-color-label", t("ìë§‰ ë°°ê²½ìƒ‰", "Caption background"));
+    setNodeText("#subtitle-bg-opacity-label", t("ë°°ê²½ íˆ¬ëª…ë„", "Background opacity"));
+    setNodeText("#subtitle-shadow-enabled-text", t("í…ìŠ¤íŠ¸ ê·¸ë¦¼ì", "Text shadow"));
 
     translateSelectOptions(document.getElementById("title-font-weight"), getAppLang() === "en"
       ? ["Bold (600)", "Bolder (700)", "Strong (800)", "Max (900)"]
-      : ["±½°Ô (600)", "´õ ±½°Ô (700)", "°­ÇÏ°Ô (800)", "ÃÖ´ë (900)"]);
+      : ["êµµê²Œ (600)", "ë” êµµê²Œ (700)", "ê°•í•˜ê²Œ (800)", "ìµœëŒ€ (900)"]);
     translateSelectOptions(document.getElementById("ranking-list-font-weight"), getAppLang() === "en"
       ? ["Bold (600)", "Bolder (700)", "Strong (800)", "Max (900)"]
-      : ["±½°Ô (600)", "´õ ±½°Ô (700)", "°­ÇÏ°Ô (800)", "ÃÖ´ë (900)"]);
+      : ["êµµê²Œ (600)", "ë” êµµê²Œ (700)", "ê°•í•˜ê²Œ (800)", "ìµœëŒ€ (900)"]);
     translateSelectOptions(document.getElementById("subtitle-style-position"), getAppLang() === "en"
       ? ["Bottom", "Middle", "Top"]
-      : ["ÇÏ´Ü", "Áß¾Ó", "»ó´Ü"]);
+      : ["í•˜ë‹¨", "ì¤‘ì•™", "ìƒë‹¨"]);
     translateSelectOptions(document.getElementById("subtitle-position-select"), getAppLang() === "en"
       ? ["Bottom", "Middle", "Top"]
-      : ["ÇÏ´Ü", "Áß¾Ó", "»ó´Ü"]);
+      : ["í•˜ë‹¨", "ì¤‘ì•™", "ìƒë‹¨"]);
     translateSelectOptions(document.getElementById("subtitle-font-weight"), getAppLang() === "en"
       ? ["Regular (500)", "Bold (600)", "Bolder (700)", "Strong (800)", "Max (900)"]
-      : ["º¸Åë (500)", "±½°Ô (600)", "´õ ±½°Ô (700)", "°­ÇÏ°Ô (800)", "ÃÖ´ë (900)"]);
+      : ["ë³´í†µ (500)", "êµµê²Œ (600)", "ë” êµµê²Œ (700)", "ê°•í•˜ê²Œ (800)", "ìµœëŒ€ (900)"]);
 
-    setNodeText("#back-to-create-btn", t("¡ç ÀÌÀü", "¡ç Back"));
+    setNodeText("#back-to-create-btn", t("â† ì´ì „", "â† Back"));
     if (!isGeneratingVideo) {
-      setNodeText("#generate-video-btn", t("¿µ»ó »ı¼º", "Generate video"));
+      setNodeText("#generate-video-btn", t("ì˜ìƒ ìƒì„±", "Generate video"));
     }
-    setNodeText("#ranking-items-title", t("·©Å· ¾ÆÀÌÅÛ", "Ranking items"));
-    setNodeText("#timeline-label", t("ÀÚ¸·", "Captions"));
-    setNodeText("#timeline-add-btn", t("+ ÀÚ¸· Ãß°¡", "+ Add caption"));
-    setNodeText("#preview-video-empty", t("¼±ÅÃÇÑ ·©Å· ¿µ»óÀÌ ¿©±â¼­ Àç»ıµË´Ï´Ù", "The selected ranking clip will play here"));
+    setNodeText("#ranking-items-title", t("ë­í‚¹ ì•„ì´í…œ", "Ranking items"));
+    setNodeText("#timeline-label", t("ìë§‰", "Captions"));
+    setNodeText("#timeline-add-btn", t("+ ìë§‰ ì¶”ê°€", "+ Add caption"));
+    setNodeText("#preview-video-empty", t("ì„ íƒí•œ ë­í‚¹ ì˜ìƒì´ ì—¬ê¸°ì„œ ì¬ìƒë©ë‹ˆë‹¤", "The selected ranking clip will play here"));
   }
 
   window.translateEmulatorUI = translateEmulatorUI;
@@ -207,9 +207,9 @@
     const credits = await fetchCredits();
 
     const mins = Math.max(1, Math.ceil(Number(totalSecondsEstimate || 0) / 60));
-    const hintParts = [`¿¹»ó ±æÀÌ: ¾à ${mins}ºĞ`];
-    if (typeof credits === "number") hintParts.push(`ÇöÀç Å©·¹µ÷: ${credits.toLocaleString()}`);
-    if (hint) hint.textContent = hintParts.join(" ¡¤ ");
+    const hintParts = [`ì˜ˆìƒ ê¸¸ì´: ì•½ ${mins}ë¶„`];
+    if (typeof credits === "number") hintParts.push(`í˜„ì¬ í¬ë ˆë”§: ${credits.toLocaleString()}`);
+    if (hint) hint.textContent = hintParts.join(" Â· ");
 
     modal.querySelectorAll("button[data-quality]").forEach((btn) => {
       const key = btn.getAttribute("data-quality") || "premium";
@@ -218,7 +218,7 @@
       if (desc) {
         const base = desc.getAttribute("data-base") || desc.textContent || "";
         if (!desc.getAttribute("data-base")) desc.setAttribute("data-base", base);
-        desc.textContent = `${base} ¡¤ ¿¹»ó ${cost.toLocaleString()} Å©·¹µ÷`;
+        desc.textContent = `${base} Â· ì˜ˆìƒ ${cost.toLocaleString()} í¬ë ˆë”§`;
       }
     });
 
@@ -623,7 +623,7 @@
     if (selectedSubtitles.length === 0) {
       const empty = document.createElement("span");
       empty.className = "timeline-chip";
-      empty.textContent = "ÀÚ¸· ¾øÀ½";
+      empty.textContent = "ìë§‰ ì—†ìŒ";
       timelineCaptionRowEl.appendChild(empty);
       return;
     }
@@ -631,7 +631,7 @@
     selectedSubtitles.forEach((s) => {
       const chip = document.createElement("span");
       chip.className = "timeline-chip";
-      chip.innerHTML = `<span>${s.text}</span><button type="button" data-id="${s.id}">¡¿</button>`;
+      chip.innerHTML = `<span>${s.text}</span><button type="button" data-id="${s.id}">Ã—</button>`;
       timelineCaptionRowEl.appendChild(chip);
     });
 
@@ -707,7 +707,7 @@
   }
 
   function addSubtitleAtCurrentTime() {
-    const text = prompt("ÀÚ¸· ÅØ½ºÆ®¸¦ ÀÔ·ÂÇÏ¼¼¿ä");
+    const text = prompt("ìë§‰ í…ìŠ¤íŠ¸ë¥¼ ì…ë ¥í•˜ì„¸ìš”");
     if (!text || !text.trim()) return;
 
     const duration = getSelectedItemDuration();
@@ -1053,7 +1053,7 @@
 
   function buildPlayOrderOptions(selected, count) {
     return Array.from({ length: count }, (_, i) => i + 1)
-      .map((n) => `<option ${n === selected ? "selected" : ""}>${t(`${n}¹øÂ°·Î Àç»ı`, `Play ${n}`)}</option>`)
+      .map((n) => `<option ${n === selected ? "selected" : ""}>${t(`${n}ë²ˆì§¸ë¡œ ì¬ìƒ`, `Play ${n}`)}</option>`)
       .join("");
   }
 
@@ -1096,7 +1096,7 @@
     const orderedItems = getOrderedItems();
 
     if (itemCountEl) {
-      itemCountEl.textContent = t(`${items.length}°³ÀÇ ºñµğ¿À Å¬¸³`, `${items.length} video clips`);
+      itemCountEl.textContent = t(`${items.length}ê°œì˜ ë¹„ë””ì˜¤ í´ë¦½`, `${items.length} video clips`);
     }
 
     rankingListEl.innerHTML = orderedItems
@@ -1115,7 +1115,7 @@
             <select data-rank="${item.rank}">${buildPlayOrderOptions(order, items.length)}</select>
           </div>
           <div class="rank-title-wrap">
-            <h4>${item.title || t(`${item.rank}À§`, `#${item.rank}`)}</h4>
+            <h4>${item.title || t(`${item.rank}ìœ„`, `#${item.rank}`)}</h4>
             <p>${metaText}</p>
           </div>
           <div class="rank-actions">
@@ -1151,7 +1151,7 @@
     previewListEl.innerHTML = orderedItems
       .map((item) => {
         const active = item.rank === selectedRank;
-        return `<p class="preview-rank-line ${active ? "active" : ""}">${Number(item.playOrder || item.rank)}. ${item.title || t(`${item.rank}À§`, `#${item.rank}`)}</p>`;
+        return `<p class="preview-rank-line ${active ? "active" : ""}">${Number(item.playOrder || item.rank)}. ${item.title || t(`${item.rank}ìœ„`, `#${item.rank}`)}</p>`;
       })
       .join("");
 
@@ -1467,13 +1467,13 @@
 
     const orderedItems = getOrderedItems().filter((item) => item.videoKey);
     if (orderedItems.length === 0) {
-      alert("¸ÕÀú ¿µ»óÀ» ÇÏ³ª ÀÌ»ó Ã·ºÎÇØ¾ß ÇÕ´Ï´Ù.");
+      alert("ë¨¼ì € ì˜ìƒì„ í•˜ë‚˜ ì´ìƒ ì²¨ë¶€í•´ì•¼ í•©ë‹ˆë‹¤.");
       return;
     }
 
     const mimeType = getSupportedRecordingMimeType();
     if (!mimeType) {
-      alert("ÀÌ ºê¶ó¿ìÀú´Â ¿µ»ó ³»º¸³»±â¸¦ Áö¿øÇÏÁö ¾Ê½À´Ï´Ù.");
+      alert("ì´ ë¸Œë¼ìš°ì €ëŠ” ì˜ìƒ ë‚´ë³´ë‚´ê¸°ë¥¼ ì§€ì›í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.");
       return;
     }
 
@@ -1489,7 +1489,7 @@
     isGeneratingVideo = true;
     if (generateVideoBtnEl) {
       generateVideoBtnEl.disabled = true;
-      generateVideoBtnEl.textContent = "»ı¼º Áß...";
+      generateVideoBtnEl.textContent = "ìƒì„± ì¤‘...";
     }
 
     const renderCanvas = document.createElement("canvas");
@@ -1633,7 +1633,7 @@
 
       try {
         if (generateVideoBtnEl) {
-          generateVideoBtnEl.textContent = "MP4 º¯È¯ Áß...";
+          generateVideoBtnEl.textContent = "MP4 ë³€í™˜ ì¤‘...";
         }
 
         const secondsForBilling = Math.round(totalDurationSec || secondsEstimate || 0);
@@ -1665,15 +1665,15 @@
         console.error("Failed to convert webm to mp4:", error);
         const msg = String(error?.message || "");
         if (msg.toLowerCase().includes("insufficient_credits")) {
-          alert("Å©·¹µ÷ÀÌ ºÎÁ·ÇÕ´Ï´Ù. °ü¸®ÀÚ¿¡°Ô Å©·¹µ÷À» ¿äÃ»ÇÏ°Å³ª ¿ä±İÁ¦¸¦ ¾÷±×·¹ÀÌµåÇØÁÖ¼¼¿ä.");
+          alert("í¬ë ˆë”§ì´ ë¶€ì¡±í•©ë‹ˆë‹¤. ê´€ë¦¬ìì—ê²Œ í¬ë ˆë”§ì„ ìš”ì²­í•˜ê±°ë‚˜ ìš”ê¸ˆì œë¥¼ ì—…ê·¸ë ˆì´ë“œí•´ì£¼ì„¸ìš”.");
         } else {
-          alert("MP4 º¯È¯ ¼­¹ö¿¡ ¿¬°áÇÏÁö ¸øÇß½À´Ï´Ù. start-server.bat¸¦ ¸ÕÀú ½ÇÇàÇØ¾ß ÇÕ´Ï´Ù. ÀÌ¹ø¿¡´Â WEBMÀ¸·Î ÀúÀåÇÕ´Ï´Ù.");
+          alert("MP4 ë³€í™˜ ì„œë²„ì— ì—°ê²°í•˜ì§€ ëª»í–ˆìŠµë‹ˆë‹¤. start-server.batë¥¼ ë¨¼ì € ì‹¤í–‰í•´ì•¼ í•©ë‹ˆë‹¤. ì´ë²ˆì—ëŠ” WEBMìœ¼ë¡œ ì €ì¥í•©ë‹ˆë‹¤.");
         }
         downloadBlob(outputBlob, `shortsmaker-export-${Date.now()}.webm`);
       }
     } catch (error) {
       console.error("Failed to generate video:", error);
-      alert("¿µ»ó »ı¼º Áß ¿À·ù°¡ ¹ß»ıÇß½À´Ï´Ù.");
+      alert("ì˜ìƒ ìƒì„± ì¤‘ ì˜¤ë¥˜ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤.");
     } finally {
       if (objectUrl) {
         URL.revokeObjectURL(objectUrl);
@@ -1687,7 +1687,7 @@
       isGeneratingVideo = false;
       if (generateVideoBtnEl) {
         generateVideoBtnEl.disabled = false;
-        generateVideoBtnEl.textContent = "¿µ»ó »ı¼º";
+        generateVideoBtnEl.textContent = "ì˜ìƒ ìƒì„±";
       }
     }
   }
@@ -1749,7 +1749,7 @@
       const data = res.ok ? await res.json() : null;
 
       // Check both plan name and status key to be bulletproof
-      const isFree = !data || !data.subscriptionStatus || data.subscriptionStatus === "free" || data.subscriptionPlan === "¹«·á" || data.subscriptionPlan === "Free";
+      const isFree = !data || !data.subscriptionStatus || data.subscriptionStatus === "free" || data.subscriptionPlan === "ë¬´ë£Œ" || data.subscriptionPlan === "Free";
 
 
       if (isFree) {
@@ -1775,7 +1775,7 @@
                 if (!section.querySelector('.pro-badge')) {
                   const badge = document.createElement("span");
                   badge.className = "pro-badge";
-                  badge.textContent = " ?? ±¸µ¶ Àü¿ë";
+                  badge.textContent = " ğŸ”’ êµ¬ë… ì „ìš©";
                   badge.style.fontSize = "11px";
                   badge.style.background = "rgba(255, 60, 60, 0.15)";
                   badge.style.color = "#ff4d4d";
@@ -1807,3 +1807,5 @@
 
 
   applyFreeTierLocks();
+
+

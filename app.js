@@ -1224,7 +1224,7 @@ function render() {
       renderSubtitleTimeline();
       await updatePreviewVideoForSelected();
       if (previewVideoEl?.src) {
-        previewVideoEl.play().catch(() => {});
+        previewVideoEl.play().catch(() => { });
       }
     });
   });
@@ -1553,7 +1553,7 @@ async function generateFinalVideo() {
       const clipDuration = Math.min(getItemDurationValue(item), renderVideo.duration || getItemDurationValue(item));
       totalDurationSec += Math.max(0, Number(clipDuration || 0));
       renderVideo.currentTime = 0;
-      await waitForMediaEvent(renderVideo, "seeked").catch(() => {});
+      await waitForMediaEvent(renderVideo, "seeked").catch(() => { });
       if (renderVideo.readyState < 2) {
         await waitForMediaEvent(renderVideo, "loadeddata");
       }
@@ -1592,10 +1592,10 @@ async function generateFinalVideo() {
             try {
               renderVideo.currentTime = seekTo;
               await Promise.race([
-                waitForMediaEvent(renderVideo, "seeked").catch(() => {}),
+                waitForMediaEvent(renderVideo, "seeked").catch(() => { }),
                 new Promise((r) => setTimeout(r, 1500))
               ]);
-              await renderVideo.play().catch(() => {});
+              await renderVideo.play().catch(() => { });
             } catch {
               // ignore
             } finally {
@@ -1682,7 +1682,7 @@ async function generateFinalVideo() {
     renderVideo.removeAttribute("src");
     renderVideo.load();
     if (audioContext) {
-      audioContext.close().catch(() => {});
+      audioContext.close().catch(() => { });
     }
     isGeneratingVideo = false;
     if (generateVideoBtnEl) {
@@ -1741,3 +1741,36 @@ document.addEventListener("site-language-change", () => {
   setTimeout(() => translateEmulatorUI(), 0);
   setTimeout(() => translateEmulatorUI(), 80);
 });
+
+async function applyFreeTierLocks() {
+  if (document.body.dataset.page !== "emulator") return;
+  try {
+    const res = await fetch("/api/user/info");
+    const data = res.ok ? await res.json() : null;
+    const isFree = !data || !data.subscriptionPlan || data.subscriptionPlan === "무료" || data.subscriptionPlan === "Free";
+
+    if (isFree) {
+      const lockTitles = [
+        "layout-controls-title",
+        "ranking-list-settings-title",
+        "background-music-title",
+        "transition-black-title",
+        "background-color-title"
+      ];
+      lockTitles.forEach(id => {
+        const titleEl = document.getElementById(id);
+        if (titleEl) {
+          const section = titleEl.closest(".collapsible-section");
+          if (section) {
+            section.classList.add("free-tier-locked");
+            titleEl.innerHTML += ` <span class="pro-badge">🔒 구독 전용</span>`;
+          }
+        }
+      });
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+applyFreeTierLocks();

@@ -6,7 +6,7 @@ class RankingVideoCreator {
         this.videos = new Array(this.rankingCount).fill(null);
         this.titles = new Array(this.rankingCount).fill('');
         this.videoDurations = new Array(this.rankingCount).fill(10); // 각 영상의 재생 시간 (초)
-        this.playbackOrder = Array.from({length: this.rankingCount}, (_, i) => i + 1); // 재생 순서 배열
+        this.playbackOrder = Array.from({ length: this.rankingCount }, (_, i) => i + 1); // 재생 순서 배열
         this.titleSettings = {
             text1: '',
             text2: ''
@@ -27,16 +27,16 @@ class RankingVideoCreator {
         this.init();
     }
 
-    getLang() {
+    getAppLang() {
         return typeof window.getSiteLang === 'function' ? window.getSiteLang() : 'ko';
     }
 
     t(ko, en) {
-        return this.getLang() === 'en' ? en : ko;
+        return this.getAppLang() === 'en' ? en : ko;
     }
 
     rankLabel(rank) {
-        return this.getLang() === 'en' ? `#${rank}` : `${rank}위`;
+        return this.getAppLang() === 'en' ? `#${rank}` : `${rank}위`;
     }
 
     rankTitlePlaceholder(rank) {
@@ -468,7 +468,7 @@ class RankingVideoCreator {
         this.videos = new Array(this.rankingCount).fill(null);
         this.titles = new Array(this.rankingCount).fill('');
         this.videoDurations = new Array(this.rankingCount).fill(10);
-        this.playbackOrder = Array.from({length: this.rankingCount}, (_, i) => i + 1);
+        this.playbackOrder = Array.from({ length: this.rankingCount }, (_, i) => i + 1);
 
         // 카드 동적 생성
         for (let i = 0; i < this.rankingCount; i++) {
@@ -851,7 +851,7 @@ class RankingVideoCreator {
         // 폼 초기화
         this.videos = new Array(this.rankingCount).fill(null);
         this.titles = new Array(this.rankingCount).fill('');
-        this.playbackOrder = Array.from({length: this.rankingCount}, (_, i) => i + 1);
+        this.playbackOrder = Array.from({ length: this.rankingCount }, (_, i) => i + 1);
 
         // 배경음악 초기화
         this.removeMusic();

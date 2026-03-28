@@ -77,12 +77,12 @@
   const BASE_RENDER_WIDTH = 1080;
   const BASE_RENDER_HEIGHT = 1920;
 
-  function getSiteLang() {
+  function getAppLang() {
     return typeof window.getSiteLang === "function" ? window.getSiteLang() : "ko";
   }
 
   function t(ko, en) {
-    return getSiteLang() === "en" ? en : ko;
+    return getAppLang() === "en" ? en : ko;
   }
 
   function setNodeText(selector, text) {
@@ -153,19 +153,19 @@
     setNodeText("#subtitle-bg-opacity-label", t("배경 투명도", "Background opacity"));
     setNodeText("#subtitle-shadow-enabled-text", t("텍스트 그림자", "Text shadow"));
 
-    translateSelectOptions(document.getElementById("title-font-weight"), getSiteLang() === "en"
+    translateSelectOptions(document.getElementById("title-font-weight"), getAppLang() === "en"
       ? ["Bold (600)", "Bolder (700)", "Strong (800)", "Max (900)"]
       : ["굵게 (600)", "더 굵게 (700)", "강하게 (800)", "최대 (900)"]);
-    translateSelectOptions(document.getElementById("ranking-list-font-weight"), getSiteLang() === "en"
+    translateSelectOptions(document.getElementById("ranking-list-font-weight"), getAppLang() === "en"
       ? ["Bold (600)", "Bolder (700)", "Strong (800)", "Max (900)"]
       : ["굵게 (600)", "더 굵게 (700)", "강하게 (800)", "최대 (900)"]);
-    translateSelectOptions(document.getElementById("subtitle-style-position"), getSiteLang() === "en"
+    translateSelectOptions(document.getElementById("subtitle-style-position"), getAppLang() === "en"
       ? ["Bottom", "Middle", "Top"]
       : ["하단", "중앙", "상단"]);
-    translateSelectOptions(document.getElementById("subtitle-position-select"), getSiteLang() === "en"
+    translateSelectOptions(document.getElementById("subtitle-position-select"), getAppLang() === "en"
       ? ["Bottom", "Middle", "Top"]
       : ["하단", "중앙", "상단"]);
-    translateSelectOptions(document.getElementById("subtitle-font-weight"), getSiteLang() === "en"
+    translateSelectOptions(document.getElementById("subtitle-font-weight"), getAppLang() === "en"
       ? ["Regular (500)", "Bold (600)", "Bolder (700)", "Strong (800)", "Max (900)"]
       : ["보통 (500)", "굵게 (600)", "더 굵게 (700)", "강하게 (800)", "최대 (900)"]);
 

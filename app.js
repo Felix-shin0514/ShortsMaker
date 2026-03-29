@@ -14,8 +14,8 @@ const DB_STORE = "rankingVideos";
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.get("donated") === "true") {
   const thankYouMsg = getAppLang() === "ko"
-    ? "개발자 후원에 감사드립니다! 따뜻한 응원과 함께 보너스 크레딧이 지급되었습니다. ❤️"
-    : "Thank you for supporting the developer! Bonus credits have been granted with your warm support. ❤️";
+    ? "개발자 후원에 진심으로 감사드립니다! 보내주신 소중한 응원 잊지 않겠습니다. ❤️"
+    : "Thank you so much for supporting the developer! Your warm support is greatly appreciated. ❤️";
   alert(thankYouMsg);
   window.history.replaceState({}, document.title, window.location.pathname);
 } else if (urlParams.get("subscribed") === "true") {

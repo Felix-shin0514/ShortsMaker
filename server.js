@@ -1362,14 +1362,6 @@ const server = http.createServer(async (req, res) => {
       await confirmTossPayment({ paymentKey, orderId, amount });
 
       if (type === "donation") {
-        // Bonus credits for donations
-        let bonus = 0;
-        if (amount >= 100000) bonus = 15000;
-        else if (amount >= 50000) bonus = 7000;
-        else if (amount >= 20000) bonus = 2500;
-        else if (amount >= 2000) bonus = 200;
-
-        await store.updateUserCredits(ctx.user.id, { delta: bonus });
         res.writeHead(302, { Location: "/dashboard.html?donated=true" });
       } else {
         // Regular Subscription

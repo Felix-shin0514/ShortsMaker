@@ -83,56 +83,74 @@
   document.querySelectorAll("[data-plan]").forEach((btn) => {
     btn.addEventListener("click", async () => {
       const plan = btn.getAttribute("data-plan");
+      const isFree = (plan === "free");
+
       try {
-        const res = await fetch("/api/user/info");
-        if (res.status === 401) {
+        const infoRes = await fetch("/api/user/info");
+        if (infoRes.status === 401) {
           window.location.href = `/login.html?next=${encodeURIComponent("/pricing.html")}`;
           return;
         }
-      } catch {
-        // ignore
-      }
+        const userInfo = await infoRes.json();
+        if (userInfo.subscriptionPlanKey === plan) {
+          alert(t("이미 해당 플랜으로 구독이 활성화되어 있습니다.", "This subscription plan is already active."));
+          return;
+        }
 
-      try {
-        const res = await fetch("/api/billing/mock/success", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ planKey: plan })
+        if (isFree) {
+          const mockRes = await fetch("/api/billing/mock/success", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ planKey: plan })
+          });
+          if (mockRes.ok) {
+            alert(t("무료 플랜이 적용되었습니다.", "Free plan applied."));
+            window.location.reload();
+          }
+          return;
+        }
+
+        btn.disabled = true;
+        setStatus(t("결제창을 불러오는 중...", "Loading payment window..."));
+
+        const configRes = await fetch("/api/payments/config");
+        const config = await configRes.json().catch(() => ({}));
+        const clientKey = config.tossClientKey || "test_ck_D5bZzxlz67dn099lO5DlV696E7vg";
+
+        const tossPayments = TossPayments(clientKey);
+        const amounts = { basic: 9900, pro: 16900, creator: 29900 };
+        const names = { basic: "베이직", pro: "프로", creator: "크리에이터" };
+        const orderId = "order_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
+
+        tossPayments.requestPayment('카드', {
+          amount: amounts[plan],
+          orderId: orderId,
+          orderName: `ShortsMaker ${names[plan]} 요금제`,
+          customerName: userInfo.displayName || "User",
+          successUrl: window.location.origin + `/api/payments/toss/success?planKey=${plan}`,
+          failUrl: window.location.origin + `/api/payments/toss/fail`,
+        }).catch((err) => {
+          btn.disabled = false;
+          setStatus("");
+          if (err.code === 'USER_CANCEL') return;
+          alert(t("결제 요청 중 오류가 발생했습니다: ", "Error during payment request: ") + err.message);
         });
-
-        const data = await res.json().catch(() => null);
-
-        if (res.status === 403) {
-          alert(t(
-            "지금은 테스트 단계라 관리자 계정에서만 구독(모의 결제) 적용이 가능합니다.",
-            "Mock subscription is currently available only for the admin account during testing."
-          ));
-          return;
-        }
-
-        if (res.status === 409) {
-          alert(t(
-            "이미 해당 플랜으로 구독이 활성화되어 있습니다.",
-            "This subscription plan is already active."
-          ));
-          return;
-        }
-
-        if (!res.ok) {
-          alert(data && data.error ? data.error : t("구독 처리 중 오류가 발생했습니다.", "An error occurred while processing the subscription."));
-          return;
-        }
-
-        alert(
-          t("구독이 적용되었습니다.", "Subscription applied.") +
-          `\n${t("플랜", "Plan")}: ${data.subscriptionPlan}` +
-          `\n${t("현재 크레딧", "Current credits")}: ${Number(data.credits || 0).toLocaleString("ko-KR")}`
-        );
-        window.location.reload();
-      } catch {
-        alert(t("구독 처리 중 오류가 발생했습니다.", "An error occurred while processing the subscription."));
+      } catch (err) {
+        btn.disabled = false;
+        setStatus("");
+        alert(t("처리에 실패했습니다.", "Failed to process."));
       }
     });
+  });
+
+  window.addEventListener("DOMContentLoaded", () => {
+    const params = new URLSearchParams(window.location.search);
+    const error = params.get("error");
+    if (error) {
+      alert(t("결제 실패: ", "Payment failed: ") + error);
+      // Clean up URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
   });
 
   document.addEventListener("site-language-change", updateCalculator);

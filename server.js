@@ -96,7 +96,7 @@ async function maybeGrantMonthlyCredits(user) {
   return store.getUser ? await store.getUser(user.id) : user;
 }
 
-async function applyMockSubscriptionPayment({ userId, planKey }) {
+async function applySubscriptionPayment({ userId, planKey, provider, paymentId }) {
   const plan = getPlan(planKey);
   if (!plan || plan.key === "free") {
     const err = new Error("Invalid plan");
@@ -115,26 +115,14 @@ async function applyMockSubscriptionPayment({ userId, planKey }) {
   const renewAtMs = Number(user.subscriptionRenewAtMs || 0);
   const currentPlanKey = getUserPlanKey(user);
 
-  // Prevent repeated grants while the current billing period is still active.
-  if (
-    renewAtMs &&
-    now < renewAtMs &&
-    user.subscriptionStatus === "active" &&
-    user.subscriptionProvider === "toss_mock" &&
-    currentPlanKey === plan.key
-  ) {
-    const err = new Error("Already subscribed");
-    err.statusCode = 409;
-    throw err;
-  }
-
-  const paymentId = "mock_" + crypto.randomUUID();
+  // For real payments, we usually allow overwriting or extending. 
+  // For simplicity, we just set a new 30-day period from now.
 
   await store.updateUser(userId, {
     subscriptionPlanKey: plan.key,
     subscriptionMonthlyCredits: plan.monthlyCredits || 0,
     subscriptionStatus: "active",
-    subscriptionProvider: "toss_mock",
+    subscriptionProvider: provider || "unknown",
     subscriptionRenewAtMs: now + BILLING_PERIOD_MS,
     subscriptionLastGrantAtMs: now,
     subscriptionLastPaymentId: paymentId
@@ -146,6 +134,34 @@ async function applyMockSubscriptionPayment({ userId, planKey }) {
 
   return store.getUser ? await store.getUser(userId) : null;
 }
+
+async function applyMockSubscriptionPayment({ userId, planKey }) {
+  return applySubscriptionPayment({ userId, planKey, provider: "toss_mock", paymentId: "mock_" + crypto.randomUUID() });
+}
+
+async function confirmTossPayment({ paymentKey, orderId, amount }) {
+  const secretKey = process.env.TOSS_SECRET_KEY || "test_sk_zOlvpZmp1989pP86o9Z885M6XOr4";
+  const auth = Buffer.from(secretKey + ":").toString("base64");
+
+  const response = await fetch("https://api.tosspayments.com/v1/payments/confirm", {
+    method: "POST",
+    headers: {
+      Authorization: `Basic ${auth}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ paymentKey, orderId, amount }),
+  });
+
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const err = new Error(data.message || "Payment confirmation failed");
+    err.code = data.code;
+    err.statusCode = response.status;
+    throw err;
+  }
+  return data;
+}
+
 
 const MIME_TYPES = {
   ".html": "text/html; charset=utf-8",
@@ -1314,6 +1330,59 @@ const server = http.createServer(async (req, res) => {
       return;
     }
   }
+
+  if (req.method === "GET" && url.pathname === "/api/payments/config") {
+    sendApiJson(res, 200, {
+      tossClientKey: process.env.TOSS_CLIENT_KEY || "test_ck_D5bZzxlz67dn099lO5DlV696E7vg"
+    });
+    return;
+  }
+
+  if (req.method === "GET" && url.pathname === "/api/payments/toss/success") {
+    const ctx = await getAuthContext(req);
+    if (!ctx.user) {
+      res.writeHead(302, { Location: "/login.html" });
+      res.end();
+      return;
+    }
+
+    const paymentKey = url.searchParams.get("paymentKey");
+    const orderId = url.searchParams.get("orderId");
+    const amount = Number(url.searchParams.get("amount"));
+    const planKey = url.searchParams.get("planKey");
+
+    if (!paymentKey || !orderId || !amount || !planKey) {
+      res.writeHead(302, { Location: "/pricing.html?error=invalid_params" });
+      res.end();
+      return;
+    }
+
+    try {
+      await confirmTossPayment({ paymentKey, orderId, amount });
+      await applySubscriptionPayment({
+        userId: ctx.user.id,
+        planKey,
+        provider: "toss",
+        paymentId: paymentKey
+      });
+      res.writeHead(302, { Location: "/dashboard.html?subscribed=true" });
+      res.end();
+    } catch (err) {
+      console.error("Toss Payment Error:", err);
+      res.writeHead(302, { Location: `/pricing.html?error=${encodeURIComponent(err.message || "payment_failed")}` });
+      res.end();
+    }
+    return;
+  }
+
+  if (req.method === "GET" && url.pathname === "/api/payments/toss/fail") {
+    const code = url.searchParams.get("code");
+    const message = url.searchParams.get("message");
+    res.writeHead(302, { Location: `/pricing.html?error=${encodeURIComponent(message || "payment_canceled")}` });
+    res.end();
+    return;
+  }
+
 
   if (req.method === "GET" && url.pathname === "/api/user/promotions") {
     const ctx = await getAuthContext(req);

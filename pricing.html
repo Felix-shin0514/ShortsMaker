@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="./lang.css?v=20260326-5" />
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9245830608057125"
     crossorigin="anonymous"></script>
-  <script src="https://js.tosspayments.com/v1/payment"></script>
+  <script src="https://js.tosspayments.com/v1/payment-widget"></script>
 </head>
 
 <body class="dashboard-page pricing-page" data-page="pricing">
@@ -233,8 +233,27 @@
     </footer>
   </main>
 
+  <!-- Payment Modal -->
+  <div id="paymentModal" class="payment-modal" style="display: none;">
+    <div class="payment-modal-content">
+      <div class="payment-modal-header">
+        <h3 id="paymentModalTitle">결제 진행</h3>
+        <button id="closePaymentModal" class="close-btn">&times;</button>
+      </div>
+      <div class="payment-modal-body">
+        <p id="paymentModalPlanName" style="margin-bottom: 20px; font-weight: bold; color: #3b82f6;"></p>
+        <!-- Toss Payment Widget Elements -->
+        <div id="payment-method"></div>
+        <div id="agreement"></div>
+      </div>
+      <div class="payment-modal-footer">
+        <button id="payment-button" class="payment-btn">결제하기</button>
+      </div>
+    </div>
+  </div>
+
   <script src="./lang.js?v=20260326-5"></script>
-  <script src="./pricing.js?v=20260326-1"></script>
+  <script src="./pricing.js?v=20260329-1"></script>
 </body>
 
 </html>

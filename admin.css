@@ -1,3 +1,9 @@
+.dashboard-page[data-page="admin"] .dashboard-main {
+  max-width: 100%;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
 .admin-toolbar {
   display: flex;
   gap: 10px;
@@ -79,43 +85,43 @@
 /* Name */
 .admin-table th:nth-child(2),
 .admin-table td:nth-child(2) {
-  width: 160px;
+  width: 180px;
 }
 
 /* Email */
 .admin-table th:nth-child(3),
 .admin-table td:nth-child(3) {
-  width: 100px;
+  width: 110px;
 }
 
 /* Plan */
 .admin-table th:nth-child(4),
 .admin-table td:nth-child(4) {
-  width: 70px;
+  width: 80px;
 }
 
 /* Credits */
 .admin-table th:nth-child(5),
 .admin-table td:nth-child(5) {
-  width: 160px;
+  width: 180px;
 }
 
 /* Adjust */
 .admin-table th:nth-child(6),
 .admin-table td:nth-child(6) {
-  width: 120px;
+  width: 140px;
 }
 
 /* Setting */
 .admin-table th:nth-child(7),
 .admin-table td:nth-child(7) {
-  width: 100px;
+  width: 110px;
 }
 
 /* Joined */
 .admin-table th:nth-child(8),
 .admin-table td:nth-child(8) {
-  width: 100px;
+  width: 110px;
 }
 
 /* Recent */
@@ -132,6 +138,7 @@
   align-items: center;
   flex-wrap: nowrap;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .credit-actions input {
@@ -190,6 +197,7 @@
   font-weight: 500;
   transition: all 0.2s;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .admin-small-btn:hover {
@@ -249,4 +257,5 @@
   gap: 6px;
   align-items: center;
   flex-wrap: nowrap;
+  flex-shrink: 0;
 }

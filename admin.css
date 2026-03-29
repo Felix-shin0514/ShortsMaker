@@ -49,11 +49,11 @@
 
 .admin-table th,
 .admin-table td {
-  padding: 12px 12px;
+  padding: 16px 16px;
   border-bottom: 1px solid rgba(255, 255, 255, .08);
   text-align: left;
   vertical-align: middle;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .admin-table th {
@@ -80,12 +80,13 @@
 }
 
 .credit-actions input {
-  width: 110px;
-  padding: 8px 10px;
+  width: 130px;
+  padding: 10px 12px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, .12);
-  background: rgba(0, 0, 0, .22);
-  color: #e5e7eb;
+  border: 1px solid rgba(255, 255, 255, .15);
+  background: rgba(0, 0, 0, .40);
+  color: #fff;
+  font-size: 14px;
 }
 
 .credit-actions button {
@@ -124,14 +125,16 @@
 }
 
 .admin-small-btn {
-  padding: 8px 10px;
+  padding: 10px 16px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, .12);
-  background: rgba(255, 255, 255, .06);
-  color: #e5e7eb;
+  border: 1px solid rgba(255, 255, 255, .15);
+  background: rgba(255, 255, 255, .10);
+  color: #fff;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 14px;
+  font-weight: 500;
   transition: all 0.2s;
+  white-space: nowrap;
 }
 
 .admin-small-btn:hover {
@@ -157,15 +160,22 @@
 }
 
 .admin-plan-select {
-  padding: 6px 10px;
+  padding: 10px 14px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, .12);
-  background: rgba(0, 0, 0, .25);
-  color: #e5e7eb;
-  font-size: 12px;
+  border: 1px solid rgba(255, 255, 255, .20);
+  background: rgba(0, 0, 0, .40);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
   outline: none;
   cursor: pointer;
-  width: 90px;
+  width: 120px;
+}
+
+.admin-plan-select option {
+  background-color: #1a1b21;
+  color: #ffffff;
+  padding: 10px;
 }
 
 .admin-plan-select:hover {
@@ -174,9 +184,10 @@
 
 .admin-credit-cell {
   font-variant-numeric: tabular-nums;
-  font-weight: 700;
-  color: #fbbf24;
-  /* highlight credit values */
+  font-weight: 800;
+  font-size: 15px;
+  color: #fcd34d;
+  /* brighter yellow */
 }
 
 .admin-setting-actions {

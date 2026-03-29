@@ -33,13 +33,13 @@ function formatDate(dateStr) {
   if (!dateStr) return "";
   const d = new Date(dateStr);
   if (Number.isNaN(d.getTime())) return "";
-  return d.toLocaleString("ko-KR", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit"
-  });
+  const pad = (n) => String(n).padStart(2, "0");
+  const year = String(d.getFullYear()).slice(-2);
+  const month = pad(d.getMonth() + 1);
+  const day = pad(d.getDate());
+  const hour = pad(d.getHours());
+  const min = pad(d.getMinutes());
+  return `${year}.${month}.${day} ${hour}:${min}`;
 }
 
 function setStatus(text) {

@@ -174,7 +174,9 @@ const MIME_TYPES = {
   ".svg": "image/svg+xml",
   ".ico": "image/x-icon",
   ".webm": "video/webm",
-  ".mp4": "video/mp4"
+  ".mp4": "video/mp4",
+  ".xml": "text/xml; charset=utf-8",
+  ".txt": "text/plain; charset=utf-8"
 };
 
 function getLanAddresses() {

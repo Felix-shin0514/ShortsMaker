@@ -143,6 +143,50 @@
     });
   });
 
+  document.querySelectorAll("[data-donation]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const amount = Number(btn.getAttribute("data-donation"));
+      const name = btn.parentElement.querySelector("h3").textContent;
+
+      try {
+        const infoRes = await fetch("/api/user/info");
+        if (infoRes.status === 401) {
+          window.location.href = `/login.html?next=${encodeURIComponent("/pricing.html")}`;
+          return;
+        }
+        const userInfo = await infoRes.json();
+
+        btn.disabled = true;
+        setStatus(t("결제창을 불러오는 중...", "Loading payment window..."));
+
+        const configRes = await fetch("/api/payments/config");
+        const config = await configRes.json().catch(() => ({}));
+        const clientKey = config.tossClientKey || "test_ck_D5bZzxlz67dn099lO5DlV696E7vg";
+
+        const tossPayments = TossPayments(clientKey);
+        const orderId = "donation_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
+
+        tossPayments.requestPayment('카드', {
+          amount: amount,
+          orderId: orderId,
+          orderName: `ShortsMaker 개발자 후원: ${name}`,
+          customerName: userInfo.displayName || "User",
+          successUrl: window.location.origin + `/api/payments/toss/success?type=donation&amount=${amount}`,
+          failUrl: window.location.origin + `/api/payments/toss/fail`,
+        }).catch((err) => {
+          btn.disabled = false;
+          setStatus("");
+          if (err.code === 'USER_CANCEL') return;
+          alert(t("결제 요청 중 오류가 발생했습니다: ", "Error during payment request: ") + err.message);
+        });
+      } catch (err) {
+        btn.disabled = false;
+        setStatus("");
+        alert(t("처리에 실패했습니다.", "Failed to process."));
+      }
+    });
+  });
+
   window.addEventListener("DOMContentLoaded", () => {
     const params = new URLSearchParams(window.location.search);
     const error = params.get("error");

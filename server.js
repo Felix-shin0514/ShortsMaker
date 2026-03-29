@@ -1350,8 +1350,9 @@ const server = http.createServer(async (req, res) => {
     const orderId = url.searchParams.get("orderId");
     const amount = Number(url.searchParams.get("amount"));
     const planKey = url.searchParams.get("planKey");
+    const type = url.searchParams.get("type"); // 'donation' or null
 
-    if (!paymentKey || !orderId || !amount || !planKey) {
+    if (!paymentKey || !orderId || !amount) {
       res.writeHead(302, { Location: "/pricing.html?error=invalid_params" });
       res.end();
       return;
@@ -1359,13 +1360,30 @@ const server = http.createServer(async (req, res) => {
 
     try {
       await confirmTossPayment({ paymentKey, orderId, amount });
-      await applySubscriptionPayment({
-        userId: ctx.user.id,
-        planKey,
-        provider: "toss",
-        paymentId: paymentKey
-      });
-      res.writeHead(302, { Location: "/dashboard.html?subscribed=true" });
+
+      if (type === "donation") {
+        // Bonus credits for donations
+        let bonus = 0;
+        if (amount >= 100000) bonus = 15000;
+        else if (amount >= 50000) bonus = 7000;
+        else if (amount >= 20000) bonus = 2500;
+        else if (amount >= 2000) bonus = 200;
+
+        await store.updateUserCredits(ctx.user.id, { delta: bonus });
+        res.writeHead(302, { Location: "/dashboard.html?donated=true" });
+      } else {
+        // Regular Subscription
+        if (!planKey) {
+          throw new Error("Missing planKey for subscription");
+        }
+        await applySubscriptionPayment({
+          userId: ctx.user.id,
+          planKey,
+          provider: "toss",
+          paymentId: paymentKey
+        });
+        res.writeHead(302, { Location: "/dashboard.html?subscribed=true" });
+      }
       res.end();
     } catch (err) {
       console.error("Toss Payment Error:", err);

@@ -799,6 +799,7 @@
 
 /* Desktop 67% Scale Adjustment */
 @media (min-width: 769px) {
+
     /* Main Container */
     .dashboard-main {
         padding: 20.1px;
@@ -1135,7 +1136,7 @@
     left: 0;
     right: 0;
     padding: 32px 14px 14px;
-    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, transparent 100%);
     text-align: center;
 }
 
@@ -1507,10 +1508,21 @@ body.dashboard-page {
     letter-spacing: 0.3px;
 }
 
-.tag.best { background: #2563eb; }
-.tag.new { background: #2fd67f; }
-.tag.hot { background: #ff3565; }
-.tag.ai { background: #6f7cff; }
+.tag.best {
+    background: #2563eb;
+}
+
+.tag.new {
+    background: #2fd67f;
+}
+
+.tag.hot {
+    background: #ff3565;
+}
+
+.tag.ai {
+    background: #6f7cff;
+}
 
 .projects-videos-section {
     margin-top: 0;
@@ -1561,12 +1573,12 @@ body.dashboard-page {
     font-size: 14px;
 }
 
-.dash-footer a{
+.dash-footer a {
     color: #e5e7eb;
     text-decoration: none;
 }
 
-.dash-footer a:hover{
+.dash-footer a:hover {
     text-decoration: underline;
     text-underline-offset: 3px;
 }
@@ -1681,4 +1693,71 @@ body.dashboard-page {
     .pv-header h3 {
         font-size: 24px;
     }
+}
+
+/* Download Sources Section */
+.download-sources-section {
+    margin-bottom: 40px;
+    padding: 0 10px;
+}
+
+.download-sources-card {
+    background: #111;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 30px;
+}
+
+.download-sources-card h3 {
+    font-size: 22px;
+    color: #ff4500;
+    margin-bottom: 8px;
+    font-weight: 800;
+}
+
+.download-sources-card p {
+    color: #888;
+    margin-bottom: 24px;
+    font-size: 15px;
+}
+
+.download-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 420px;
+}
+
+.download-btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 16px 20px;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 16px;
+    transition: all 0.2s ease;
+}
+
+.download-btn:hover {
+    background: #252525;
+    border-color: #555;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.download-btn svg {
+    flex-shrink: 0;
+}
+
+.download-btn.tiktok svg {
+    color: #fff;
+}
+
+.download-btn.youtube svg {
+    color: #ff0000;
 }

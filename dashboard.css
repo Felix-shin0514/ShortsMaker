@@ -1761,3 +1761,110 @@ body.dashboard-page {
 .download-btn.youtube svg {
     color: #ff0000;
 }
+
+/* SEO & Informational Sections */
+.seo-content-section {
+    background: transparent;
+    padding: 80px 20px;
+    max-width: 1100px;
+    margin: 0 auto;
+    color: #fff;
+    line-height: 1.8;
+}
+
+.seo-content-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+}
+
+.seo-block h2 {
+    font-size: 28px;
+    font-weight: 850;
+    margin-bottom: 24px;
+    color: #fff;
+    border-left: 4px solid #3b82f6;
+    padding-left: 15px;
+}
+
+.seo-block h3 {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 30px 0 15px;
+    color: #3b82f6;
+}
+
+.seo-block p {
+    margin-bottom: 20px;
+    color: #aaa;
+    font-size: 16px;
+}
+
+.usage-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.step-card {
+    background: #111;
+    padding: 30px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.step-card:hover {
+    transform: translateY(-5px);
+    border-color: #3b82f6;
+}
+
+.step-num {
+    font-size: 24px;
+    font-weight: 900;
+    color: #3b82f6;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.faq-item {
+    background: #111;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.faq-q {
+    font-weight: 800;
+    font-size: 17px;
+    color: #fff;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.faq-a {
+    color: #aaa;
+    font-size: 15px;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .seo-content-section {
+        padding: 40px 15px;
+    }
+
+    .seo-block h2 {
+        font-size: 24px;
+    }
+
+    .usage-steps {
+        grid-template-columns: 1fr;
+    }
+}
